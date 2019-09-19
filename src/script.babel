@@ -1,8 +1,7 @@
 
 document.addEventListener("DOMContentLoaded",() => {
-  //let usCountyDataPromise=fetch("https://unpkg.com/world-atlas@1.1.4/world/110m.json");
-  let usCountyDataPromise=fetch("https://raw.githubusercontent.com/deldersveld/topojson/master/world-countries.json");
-  Promise.resolve(usCountyDataPromise)
+  let countryDataPromise=fetch("https://raw.githubusercontent.com/deldersveld/topojson/master/world-countries.json");
+  Promise.resolve(countryDataPromise)
     .then(responses=>responses.text())
     .then(data=>{
       loadMap(data);
@@ -15,28 +14,25 @@ document.addEventListener("DOMContentLoaded",() => {
 *  @param {Array<Object>} educationDetails The education dataset that represents 
 *  all eductaion attainment percent of all the counties corresponding with county id.
 */
-let loadMap=(countyDetails)=>{
-  const countyData=JSON.parse(countyDetails);
-  console.log(countyData.objects.countries1.geometries);
+let loadMap=(countryDetails)=>{
+  const countryData=JSON.parse(countryDetails);
   const svgHeight=getChartHeight();
   const svgWidth=getChartWidth();
   const padding=getChartPadding();
   let svg=loadSvg(svgHeight,svgWidth);
   let path = d3.geoPath().projection(d3.geoMercator());
   let tooltip=loadTooltip();
-  svg.append("g")
-    .attr("class", "counties")
+  let gElement=svg.append("g")
     .selectAll("path")
-    .data(topojson.feature(countyData, countyData.objects.countries1).features)
+    .data(topojson.feature(countryData, countryData.objects.countries1).features)
     .enter()
     .append("path")
-    .attr("class","county")
+    .attr("name",(d,i)=>countryData.objects.countries1.geometries[i].properties.name)
     .attr("class","pathWithBorder")
     .attr("fill", (d)=> "#e9e316")
     .attr("d", path)
-    .on("click",(d,i,nodes)=>{
+    .on("mouseover",(d,i,nodes)=>{
         d3.select(nodes[i]).attr("fill", "#ff0005");
-    
         tooltip.style("visibility","visible")
                .style("left", `${(d3.event.pageX+10)}px`) 
                .style("top", `${(d3.event.pageY-25)}px`)
@@ -45,8 +41,8 @@ let loadMap=(countyDetails)=>{
     .on("mouseout",(d)=>{
         tooltip.style("visibility","hidden");
       });
-      d3.select("#country-name")
-        .text(getRandomCountryName(countyData));
+  loadNewCountry(countryData,gElement,0,1);
+     
 }   
 
 /** Return chart height.*/
@@ -69,12 +65,35 @@ let loadTooltip=()=>{
            .style("visibility","hidden")
            .attr("id","tooltip"); 
 };
-let getRandomCountryName=(countyData)=>{
-  let noOfCountries= countyData.objects.countries1.geometries.length;
-  
-  console.log(countyData.objects.countries1.geometries[getRandomInteger(noOfCountries)]);
-  return countyData.objects.countries1.geometries[getRandomInteger(noOfCountries)].properties.name;
+let getRandomCountryName=(countryData)=>{
+  let noOfCountries= countryData.objects.countries1.geometries.length;
+  return countryData.objects.countries1.geometries[getRandomInteger(noOfCountries)].properties.name;
 };
 let getRandomInteger=(maxOfRange)=>{
   return Math.floor(Math.random()*Math.floor(maxOfRange));
+};
+let loadNewCountry=(countryData,gElement,points,questionNo)=>{
+  if(questionNo>5){
+    return ;
+  }
+  let countryName=getRandomCountryName(countryData);
+  let noOfAttempts=0;
+  d3.select("#country-name")
+    .text(countryName);
+  
+  gElement.on("click",(d,i,nodes)=>{
+    d3.select(nodes[i]).attr("fill","blue");
+    if(d3.select(nodes[i]).attr("name")===countryName){
+      points=points+30-(10*noOfAttempts);
+      updatePoints(points);
+      loadNewCountry(countryData,gElement,points,questionNo+1);
+    }
+    noOfAttempts++;
+    if(noOfAttempts===3)
+      loadNewCountry(countryData,gElement,points,questionNo+1);
+  })
+};
+let updatePoints=(points)=>{
+  d3.select("#points")
+    .text(points);
 };
