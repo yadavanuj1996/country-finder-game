@@ -1,6 +1,7 @@
 
 document.addEventListener("DOMContentLoaded", () => {
-  let countryDataPromise = fetch("https://raw.githubusercontent.com/deldersveld/topojson/master/world-countries.json");
+  let countryDataPromise = fetch("https://gist.githubusercontent.com/yadavanuj1996/839c37eb95f4fd2f704194e764998351/raw/c09e1f413ee07b2865c09644f37f275553fa3b26/world-countries.json");
+
   Promise.resolve(countryDataPromise).
   then(responses => responses.text()).
   then(data => {
@@ -41,6 +42,30 @@ let loadMap = countryDetails => {
   on("mouseout", d => {
     tooltip.style("visibility", "hidden");
   });
+  for (let i = 0; i < 180; i++) {
+    if (countryData.objects.countries1.geometries[i].properties.name === "India") {
+      let arcData = countryData.objects.countries1.geometries[i].arcs;
+      console.log(arcData);
+      let test = JSON.parse(`{"type":"GeometryCollection","geometries":[{"arcs":[[${arcData}]],"type":"Polygon"}]}`);
+      console.log(test);
+      let centroids = topojson.feature(countryData, test).features.map(feature => {
+        return path.centroid(feature);
+      });
+      svg.selectAll(".centroid").data(centroids).
+      enter().append("circle").
+      attr("class", "centroid").
+      attr("fill", "transparent").
+      attr("stroke", "black").
+      attr("stroke-width", 0.7).
+      attr("r", 60).
+      attr("cx", d => d[0]).
+      attr("cy", d => d[1]);
+
+    }
+  }
+
+  let test2 = countryData.objects.countries1;
+
   loadNewCountry(countryData, gElement, 0, 1);
 
 };
@@ -67,6 +92,7 @@ let loadTooltip = () => {
 };
 let getRandomCountryName = countryData => {
   let noOfCountries = countryData.objects.countries1.geometries.length;
+  console.log(countryData.objects.countries1.geometries);
   return countryData.objects.countries1.geometries[getRandomInteger(noOfCountries)].properties.name;
 };
 let getRandomInteger = maxOfRange => {
@@ -89,9 +115,11 @@ let loadNewCountry = (countryData, gElement, points, questionNo) => {
       loadNewCountry(countryData, gElement, points, questionNo + 1);
     }
     noOfAttempts++;
+
     if (noOfAttempts === 3)
     loadNewCountry(countryData, gElement, points, questionNo + 1);
   });
+
 };
 let updatePoints = points => {
   d3.select("#points").
