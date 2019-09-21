@@ -42,31 +42,8 @@ let loadMap = countryDetails => {
   on("mouseout", d => {
     tooltip.style("visibility", "hidden");
   });
-  for (let i = 0; i < 180; i++) {
-    if (countryData.objects.countries1.geometries[i].properties.name === "India") {
-      let arcData = countryData.objects.countries1.geometries[i].arcs;
-      console.log(arcData);
-      let test = JSON.parse(`{"type":"GeometryCollection","geometries":[{"arcs":[[${arcData}]],"type":"Polygon"}]}`);
-      console.log(test);
-      let centroids = topojson.feature(countryData, test).features.map(feature => {
-        return path.centroid(feature);
-      });
-      svg.selectAll(".centroid").data(centroids).
-      enter().append("circle").
-      attr("class", "centroid").
-      attr("fill", "transparent").
-      attr("stroke", "black").
-      attr("stroke-width", 0.7).
-      attr("r", 60).
-      attr("cx", d => d[0]).
-      attr("cy", d => d[1]);
 
-    }
-  }
-
-  let test2 = countryData.objects.countries1;
-
-  loadNewCountry(countryData, gElement, 0, 1);
+  loadNewCountry(countryData, svg, gElement, 0, 1);
 
 };
 
@@ -90,34 +67,70 @@ let loadTooltip = () => {
   style("visibility", "hidden").
   attr("id", "tooltip");
 };
+// @TODO Select unique random country names , no country name should repeat twice
 let getRandomCountryName = countryData => {
   let noOfCountries = countryData.objects.countries1.geometries.length;
-  console.log(countryData.objects.countries1.geometries);
   return countryData.objects.countries1.geometries[getRandomInteger(noOfCountries)].properties.name;
 };
 let getRandomInteger = maxOfRange => {
   return Math.floor(Math.random() * Math.floor(maxOfRange));
 };
-let loadNewCountry = (countryData, gElement, points, questionNo) => {
+let loadNewCountry = (countryData, svg, gElement, points, questionNo) => {
   if (questionNo > 5) {
     return;
   }
+  // @TODO Use curried function concept
   let countryName = getRandomCountryName(countryData);
   let noOfAttempts = 0;
   d3.select("#country-name").
   text(countryName);
+
+  d3.select(".country-region").remove();
+  for (let i = 0; i < 180; i++) {
+    // @TODO optimize the search
+    if (countryData.objects.countries1.geometries[i].properties.name === countryName) {
+      let arcData = countryData.objects.countries1.geometries[i].arcs;
+      let test = JSON.parse(`{"type":"GeometryCollection","geometries":[{"arcs":[[${arcData}]],"type":"Polygon"}]}`);
+      let path = d3.geoPath().projection(d3.geoMercator());
+      let centroids = topojson.feature(countryData, test).features.map(feature => {
+        return path.centroid(feature);
+      });
+      /*
+            Uncomment to add dot inside country
+            svg.selectAll(".centroid").data(centroids)
+               .enter().append("circle")
+               .attr("class", "centroid")
+               .attr("r", 4)
+               .attr("cx",(d)=>d[0])
+               .attr("cy",(d)=>d[1]);
+              */
+
+      let arc = d3.arc().
+      innerRadius(150).
+      outerRadius(155);
+      // @TODO randomize sum to the centreoids as the center of circle will always be the answer       
+      let sector = svg.append("path").
+      attr("fill", "red").
+      attr("class", "country-region").
+      attr("stroke-width", 1).
+      attr("stroke", "darkslategray").
+      attr("d", arc({ startAngle: 0, endAngle: 2 * Math.PI })).
+      attr("transform", `translate(${centroids[0][0]},${centroids[0][1]})`);
+
+    }
+  }
 
   gElement.on("click", (d, i, nodes) => {
     d3.select(nodes[i]).attr("fill", "blue");
     if (d3.select(nodes[i]).attr("name") === countryName) {
       points = points + 30 - 10 * noOfAttempts;
       updatePoints(points);
-      loadNewCountry(countryData, gElement, points, questionNo + 1);
+      loadNewCountry(countryData, svg, gElement, points, questionNo + 1);
     }
     noOfAttempts++;
-
     if (noOfAttempts === 3)
-    loadNewCountry(countryData, gElement, points, questionNo + 1);
+    loadNewCountry(countryData, svg, gElement, points, questionNo + 1);
+
   });
 
 };

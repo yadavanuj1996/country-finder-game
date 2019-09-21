@@ -24,8 +24,8 @@ body{
   stroke-width: 1.8;
   stroke: black;
 }
-.dots{
-  background-color: black;
-  color: black;
-  
+.centroid{
+  border-color:green !important;
+  border: 2px solid green !important;
+  background-color: green !important;
 }
