@@ -1,4 +1,7 @@
-//@TODO Add zooning and navigation feature
+//@TODO Add zooming and navigation feature
+// @TODO Increase known countries frequency 
+// @TODO Add zooming and navigation
+    
 document.addEventListener("DOMContentLoaded",() => {
  let countryDataPromise=fetch("https://gist.githubusercontent.com/yadavanuj1996/839c37eb95f4fd2f704194e764998351/raw/c09e1f413ee07b2865c09644f37f275553fa3b26/world-countries.json"); 
  
@@ -24,24 +27,14 @@ let loadMap=(countryDetails)=>{
   let path = d3.geoPath().projection(d3.geoMercator());
   let tooltip=loadTooltip();
   let gElement=svg.append("g")
-    .selectAll("path")
-    .data(topojson.feature(countryData, countryData.objects.countries1).features)
-    .enter()
-    .append("path")
-    .attr("name",(d,i)=>countryData.objects.countries1.geometries[i].properties.name)
-    .attr("class","pathWithBorder")
-    .attr("fill", (d)=> "#e9e316")
-    .attr("d", path)
-    .on("mouseover",(d,i,nodes)=>{
-        d3.select(nodes[i]).attr("fill", "#ff0005");
-        //tooltip.style("visibility","visible")
-        tooltip.style("left", `${(d3.event.pageX+10)}px`) 
-               .style("top", `${(d3.event.pageY-25)}px`)
-               .html((d.properties.name)); 
-      })
-    .on("mouseout",(d)=>{
-        //tooltip.style("visibility","hidden");
-    });
+                  .selectAll("path")
+                  .data(topojson.feature(countryData, countryData.objects.countries1).features)
+                  .enter()
+                  .append("path")
+                  .attr("name",(d,i)=>countryData.objects.countries1.geometries[i].properties.name)
+                  .attr("class","pathWithBorder")
+                  .attr("fill", (d)=> getRandomFillColor())
+                  .attr("d", path);
   
   loadNewCountry(countryData,svg,gElement,0,1);
      
@@ -50,7 +43,7 @@ let loadMap=(countryDetails)=>{
 /** Return chart height.*/
 const getChartHeight=()=>600;
 /** Return chart width.*/
-const getChartWidth=()=>950;
+const getChartWidth=()=>1080;
 /** Return chart padding.*/
 const getChartPadding=()=>100;
 /** Add svg in body and return it.*/
@@ -78,41 +71,46 @@ let loadNewCountry=(countryData,svg,gElement,points,questionNo)=>{
   hideCountryRegionArc();
   showCountryName(countryName);
   d3.select("#tooltip").style("visibility","hidden");
-  
-/*  d3.selectAll(".pathWithBorder").on("mouseover",(d,i,nodes)=>{
-    console.log(noOfAttempts);
-    //if(noOfAttempts===2)
-  
-      d3.select("#tooltip").style("visibility","visible")
-        .html(`hello`);
-  });*/
+  let userSelectedLastChoice;
+  let userHoveredLastChoice;
   gElement.on("click",(d,i,nodes)=>{
     noOfAttempts++;
+    let userSelectedCountry=nodes[i]; // nodes[i] refer to the clicked element
+    removeOldColorOnUserSelectedCountry(userSelectedLastChoice);
+    removeOldColorOnUserHoverCountry(userHoveredLastChoice);
+    
+    userSelectedLastChoice=userSelectedCountry;
+   
     if(noOfAttempts===1)
       showCountryRegionArc(countryData,countryName,svg);
     
-    let userSelectedCountry=nodes[i]; // nodes[i] refer to the clicked element
     addColorOnUserSelectedCountry(userSelectedCountry);
     if(d3.select(userSelectedCountry).attr("name")===countryName){
       points=points+30-(10*(noOfAttempts-1));
       updatePoints(points);
+      removeOldColorOnUserSelectedCountry(userSelectedCountry); // removing present choice
+      addColorOnCorrectCountry(userSelectedCountry);
       loadNewCountry(countryData,svg,gElement,points,questionNo+1);
     }
     
-    if(areAllAttemptsExhausted(noOfAttempts))
-      loadNewCountry(countryData,svg,gElement,points,questionNo+1);  
+    if(areAllAttemptsExhausted(noOfAttempts)){
+      removeOldColorOnUserSelectedCountry(userSelectedCountry);
+      loadNewCountry(countryData,svg,gElement,points,questionNo+1); // removing present choice
+    }
+          
   });
   gElement.on("mouseover",(d,i,nodes)=>{
-    if(noOfAttempts==2){
-      let userSelectedCountry=nodes[i]; // nodes[i] refer to the clicked element
-      let userHoverCountryName=d3.select(userSelectedCountry).attr("name");
-      d3.select(nodes[i]).attr("fill", "#ff0005");
-      d3.select("#tooltip")
-        .style("visibility","visible")
-        .style("left", `${(d3.event.pageX+10)}px`) 
-        .style("top", `${(d3.event.pageY-25)}px`)
-        .html(userHoverCountryName); 
+    let userHoverCountry=nodes[i]; // nodes[i] refer to the clicked element
+    addColorOnUserHoverCountry(userHoverCountry);  
+    if(noOfAttempts===2){
+      let userHoverCountryName=d3.select(userHoverCountry).attr("name");
+      showTooltip(userHoverCountryName);
     } 
+    userHoveredLastChoice=userHoverCountry;
+  });
+  gElement.on("mouseout",(d)=>{
+    hideTooltip();
+    removeOldColorOnUserHoverCountry(userHoveredLastChoice);
   });
 };
 let getRandomCountryName=(countryData)=>{
@@ -139,16 +137,18 @@ let showCountryRegionArc=(countryData,countryName,svg)=>{
       let centroids = topojson.feature(countryData, test).features.map((feature)=>{
         return path.centroid(feature);
       });
-      /*
-        Uncomment to add dot inside country
-        svg.selectAll(".centroid").data(centroids)
-           .enter().append("circle")
+      
+       // Uncomment to add dot inside country
+       /* svg.selectAll(".centroid")
+           .data(centroids)
+           .enter()
+           .append("circle")
            .attr("class", "centroid")
-           .attr("r", 4)
+           .attr("r", 40)
            .attr("cx",(d)=>d[0])
-           .attr("cy",(d)=>d[1]);
-          */
-
+           .attr("cy",(d)=>d[1]);*/
+          console.log(arcData);
+      
       let arc = d3.arc()
                   .innerRadius(150)
                   .outerRadius(155);
@@ -166,7 +166,19 @@ let showCountryRegionArc=(countryData,countryName,svg)=>{
  
 };
 let addColorOnUserSelectedCountry=(userSelectedCountry)=>{
-  d3.select(userSelectedCountry).attr("fill","blue");   
+  d3.select(userSelectedCountry).classed('wrong-choice-effects', true);  
+};
+let removeOldColorOnUserSelectedCountry=(userSelectedLastChoice)=>{
+  d3.select(userSelectedLastChoice).classed('wrong-choice-effects', false);
+};
+let addColorOnUserHoverCountry=(userHoverCountry)=>{
+  d3.select(userHoverCountry).classed('choice-hover-effects', true);  
+};
+let removeOldColorOnUserHoverCountry=(userHoverLastChoice)=>{
+  d3.select(userHoverLastChoice).classed('choice-hover-effects', false);
+};
+let addColorOnCorrectCountry=(userSelectedCountry)=>{
+  d3.select(userSelectedCountry).classed('correct-choice-effects', true);  
 };
 let updatePoints=(points)=>{
   d3.select("#points")
@@ -178,4 +190,18 @@ let areAllAttemptsExhausted=(noOfAttempts)=>{
   
   return false;
 };
-
+let showTooltip=(userHoverCountryName)=>{
+  d3.select("#tooltip")
+        .style("visibility","visible")
+        .style("left", `${(d3.event.pageX+10)}px`) 
+        .style("top", `${(d3.event.pageY-25)}px`)
+        .html(userHoverCountryName); 
+};
+let hideTooltip=()=>{
+   d3.select("#tooltip").style("visibility","hidden");
+};
+let getRandomFillColor=()=>{
+  let earthFillColor=["#FF3F7D","#A98E00","#B87ED1","#008788","#00C5C8","#B00000","#003173","#E7AB49","#FFF065","#F99BA9","#976b68"];
+  
+  return earthFillColor[getRandomInteger(10)];
+};

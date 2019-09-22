@@ -27,5 +27,27 @@ body{
 .centroid{
   border-color:green !important;
   border: 2px solid green !important;
-  background-color: green !important;
+  background-color: black !important;
+}
+
+svg{
+   background-color: #A4D1DC !important;
+}
+.wrong-choice-effects{
+  fill: #e4221b !important;
+  paint-order: normal !important;
+  stroke-width: 1.8 !important;
+  stroke: black !important;
+}
+.choice-hover-effects{
+  fill: #e0e41b !important;
+   paint-order: normal !important;
+  stroke-width: 1.5 !important;
+  stroke: black !important;
+}
+.correct-choice-effects{
+  fill: #10ef11 !important;
+   paint-order: normal !important;
+  stroke-width: 1.5 !important;
+  stroke: black !important;
 }
