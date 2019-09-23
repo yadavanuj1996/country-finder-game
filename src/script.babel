@@ -1,7 +1,6 @@
-//@TODO Add zooming and navigation feature
+// @TODO Add zooming and navigation feature
 // @TODO Increase known countries frequency 
-// @TODO Add zooming and navigation
-    
+// @TODO Add blinking effect for right answer if user couldn't answer it 
 document.addEventListener("DOMContentLoaded",() => {
  let countryDataPromise=fetch("https://gist.githubusercontent.com/yadavanuj1996/839c37eb95f4fd2f704194e764998351/raw/c09e1f413ee07b2865c09644f37f275553fa3b26/world-countries.json"); 
  
@@ -24,7 +23,7 @@ let loadMap=(countryDetails)=>{
   const svgWidth=getChartWidth();
   const padding=getChartPadding();
   let svg=loadSvg(svgHeight,svgWidth);
-  let path = d3.geoPath().projection(d3.geoMercator());
+  let path=d3.geoPath().projection(d3.geoMercator());
   let tooltip=loadTooltip();
   let gElement=svg.append("g")
                   .selectAll("path")
@@ -41,7 +40,7 @@ let loadMap=(countryDetails)=>{
 }   
 
 /** Return chart height.*/
-const getChartHeight=()=>600;
+const getChartHeight=()=>500;
 /** Return chart width.*/
 const getChartWidth=()=>1080;
 /** Return chart padding.*/
@@ -80,10 +79,12 @@ let loadNewCountry=(countryData,svg,gElement,points,questionNo)=>{
     removeOldColorOnUserHoverCountry(userHoveredLastChoice);
     
     userSelectedLastChoice=userSelectedCountry;
-   
     if(noOfAttempts===1)
-      showCountryRegionArc(countryData,countryName,svg);
-    
+      showCountryRegionArc(countryData,countryName,svg,noOfAttempts);
+    else if(noOfAttempts===2){
+      hideCountryRegionArc();
+      showCountryRegionArc(countryData,countryName,svg,noOfAttempts);
+    }
     addColorOnUserSelectedCountry(userSelectedCountry);
     if(d3.select(userSelectedCountry).attr("name")===countryName){
       points=points+30-(10*(noOfAttempts-1));
@@ -127,7 +128,7 @@ let showCountryName=(countryName)=>{
 let hideCountryRegionArc=()=>{
   d3.select(".country-region").remove();
 };
-let showCountryRegionArc=(countryData,countryName,svg)=>{
+let showCountryRegionArc=(countryData,countryName,svg,noOfAttempts)=>{
   for(let i=0;i<180;i++){
     // @TODO optimize the search
     if(countryData.objects.countries1.geometries[i].properties.name===countryName){
@@ -147,19 +148,28 @@ let showCountryRegionArc=(countryData,countryName,svg)=>{
            .attr("r", 40)
            .attr("cx",(d)=>d[0])
            .attr("cy",(d)=>d[1]);*/
-          console.log(arcData);
-      
+      let arcInnerRadius=150;
+      let arcOuterRadius=155;
+      if(noOfAttempts===2){
+        arcInnerRadius=100;
+        arcOuterRadius=105;
+      }
       let arc = d3.arc()
-                  .innerRadius(150)
-                  .outerRadius(155);
-      // @TODO randomize sum to the centreoids as the center of circle will always be the answer       
+                  .innerRadius(arcInnerRadius)
+                  .outerRadius(arcOuterRadius);
+      // @TODO randomize sum to the centreoids as the center of circle will always be the answer 
+      let errorX=getRandomInteger(75);
+      let errorY=getRandomInteger(75);
+      errorX*=Math.floor(Math.random()*2)===1?1:-1;
+      errorY*=Math.floor(Math.random()*2)===1?1:-1;
+      
       let sector = svg.append("path")
                       .attr("fill", "red")
                       .attr("class","country-region")
                       .attr("stroke-width", 1)
                       .attr("stroke", "darkslategray")
                       .attr("d", arc({startAngle:0, endAngle:(2*Math.PI)}))
-                      .attr("transform", `translate(${centroids[0][0]},${centroids[0][1]})`);
+                      .attr("transform", `translate(${centroids[0][0]+errorX},${centroids[0][1]+errorY})`);
           
     }
   }
@@ -201,7 +211,7 @@ let hideTooltip=()=>{
    d3.select("#tooltip").style("visibility","hidden");
 };
 let getRandomFillColor=()=>{
-  let earthFillColor=["#FF3F7D","#A98E00","#B87ED1","#008788","#00C5C8","#B00000","#003173","#E7AB49","#FFF065","#F99BA9","#976b68"];
+  let earthFillColor=["#FF3F7D","#B87ED1","#008788","#00C5C8","#004EB7","#E7AB49","#FFF065","#F99BA9","#976b68"];
   
-  return earthFillColor[getRandomInteger(10)];
+  return earthFillColor[getRandomInteger(8)];
 };

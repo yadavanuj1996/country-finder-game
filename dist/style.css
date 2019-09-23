@@ -19,6 +19,9 @@ body{
   align-items: center;
   justify-content: center;
 }
+#points-holder{
+  margin: 0px;
+}
 .pathWithBorder {
   paint-order: stroke fill;
   stroke-width: 1.8;
