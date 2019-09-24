@@ -35,9 +35,22 @@ let loadMap = countryDetails => {
   attr("fill", d => getRandomFillColor()).
   attr("d", path);
 
-  loadNewCountry(countryData, svg, gElement, 0, 1);
+  let pElement = svg.append("g");
+  let zoomed = () => {
+    gElement.attr("transform", d3.event.transform);
+    pElement.attr("transform", d3.event.transform);
+  };
+
+  zoom = d3.zoom().
+  scaleExtent([1, 40]).
+  on("zoom", zoomed);
+
+  svg.call(zoom);
+
+  loadNewCountry(countryData, svg, gElement, pElement, 0, 1, []);
 
 };
+
 
 /** Return chart height.*/
 const getChartHeight = () => 500;
@@ -59,14 +72,13 @@ let loadTooltip = () => {
   style("visibility", "hidden").
   attr("id", "tooltip");
 };
-// @TODO Select unique random country names , no country name should repeat twice
-let loadNewCountry = (countryData, svg, gElement, points, questionNo) => {
+let loadNewCountry = (countryData, svg, gElement, pElement, points, questionNo, alreadyDisplayedCountry) => {
   if (questionNo > 5) {
     return;
   }
   let noOfAttempts = 0;
-  // @TODO Use curried function concept
-  let countryName = getRandomCountryName(countryData);
+  let countryName = getUniqueRandomCountryName(countryData, alreadyDisplayedCountry);
+  alreadyDisplayedCountry.push(countryName);
   hideCountryRegionArc();
   showCountryName(countryName);
   d3.select("#tooltip").style("visibility", "hidden");
@@ -80,10 +92,10 @@ let loadNewCountry = (countryData, svg, gElement, points, questionNo) => {
 
     userSelectedLastChoice = userSelectedCountry;
     if (noOfAttempts === 1)
-    showCountryRegionArc(countryData, countryName, svg, noOfAttempts);else
+    showCountryRegionArc(countryData, countryName, pElement, noOfAttempts);else
     if (noOfAttempts === 2) {
       hideCountryRegionArc();
-      showCountryRegionArc(countryData, countryName, svg, noOfAttempts);
+      showCountryRegionArc(countryData, countryName, pElement, noOfAttempts);
     }
     addColorOnUserSelectedCountry(userSelectedCountry);
     if (d3.select(userSelectedCountry).attr("name") === countryName) {
@@ -91,12 +103,12 @@ let loadNewCountry = (countryData, svg, gElement, points, questionNo) => {
       updatePoints(points);
       removeOldColorOnUserSelectedCountry(userSelectedCountry); // removing present choice
       addColorOnCorrectCountry(userSelectedCountry);
-      loadNewCountry(countryData, svg, gElement, points, questionNo + 1);
+      loadNewCountry(countryData, svg, gElement, pElement, points, questionNo + 1, alreadyDisplayedCountry);
     }
 
     if (areAllAttemptsExhausted(noOfAttempts)) {
       removeOldColorOnUserSelectedCountry(userSelectedCountry);
-      loadNewCountry(countryData, svg, gElement, points, questionNo + 1); // removing present choice
+      loadNewCountry(countryData, svg, gElement, pElement, points, questionNo + 1, alreadyDisplayedCountry); // removing present choice
     }
 
   });
@@ -114,9 +126,14 @@ let loadNewCountry = (countryData, svg, gElement, points, questionNo) => {
     removeOldColorOnUserHoverCountry(userHoveredLastChoice);
   });
 };
-let getRandomCountryName = countryData => {
+let getUniqueRandomCountryName = (countryData, alreadyDisplayedCountry) => {
   let noOfCountries = countryData.objects.countries1.geometries.length;
-  return countryData.objects.countries1.geometries[getRandomInteger(noOfCountries)].properties.name;
+  let randomCountrySNo = getRandomInteger(noOfCountries);
+  let countryName = countryData.objects.countries1.geometries[randomCountrySNo].properties.name;
+  if (alreadyDisplayedCountry.includes(countryName))
+  return getUniqueRandomCountryName(countryData, alreadyDisplayedCountry);
+
+  return countryName;
 };
 let getRandomInteger = maxOfRange => {
   return Math.floor(Math.random() * Math.floor(maxOfRange));
@@ -128,9 +145,8 @@ let showCountryName = countryName => {
 let hideCountryRegionArc = () => {
   d3.select(".country-region").remove();
 };
-let showCountryRegionArc = (countryData, countryName, svg, noOfAttempts) => {
+let showCountryRegionArc = (countryData, countryName, pElement, noOfAttempts) => {
   for (let i = 0; i < 180; i++) {
-    // @TODO optimize the search
     if (countryData.objects.countries1.geometries[i].properties.name === countryName) {
       let arcData = countryData.objects.countries1.geometries[i].arcs;
       let test = JSON.parse(`{"type":"GeometryCollection","geometries":[{"arcs":[[${arcData}]],"type":"Polygon"}]}`);
@@ -157,13 +173,12 @@ let showCountryRegionArc = (countryData, countryName, svg, noOfAttempts) => {
       let arc = d3.arc().
       innerRadius(arcInnerRadius).
       outerRadius(arcOuterRadius);
-      // @TODO randomize sum to the centreoids as the center of circle will always be the answer 
       let errorX = getRandomInteger(75);
       let errorY = getRandomInteger(75);
       errorX *= Math.floor(Math.random() * 2) === 1 ? 1 : -1;
       errorY *= Math.floor(Math.random() * 2) === 1 ? 1 : -1;
 
-      let sector = svg.append("path").
+      let sector = pElement.append("path").
       attr("fill", "red").
       attr("class", "country-region").
       attr("stroke-width", 1).
