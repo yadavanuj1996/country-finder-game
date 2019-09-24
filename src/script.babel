@@ -1,4 +1,6 @@
 // @TODO Add blinking effect for right answer if user couldn't answer it 
+// @TODO Document the code and prepare jsdocs documentation.
+// @TODO Refactor the code.
 document.addEventListener("DOMContentLoaded",() => {
  let countryDataPromise=fetch("https://gist.githubusercontent.com/yadavanuj1996/839c37eb95f4fd2f704194e764998351/raw/c09e1f413ee07b2865c09644f37f275553fa3b26/world-countries.json"); 
  
@@ -17,10 +19,7 @@ document.addEventListener("DOMContentLoaded",() => {
 */
 let loadMap=(countryDetails)=>{
   const countryData=JSON.parse(countryDetails);
-  const svgHeight=getChartHeight();
-  const svgWidth=getChartWidth();
-  const padding=getChartPadding();
-  let svg=loadSvg(svgHeight,svgWidth);
+  let svg=loadSvg();
   let path=d3.geoPath().projection(d3.geoMercator());
   let tooltip=loadTooltip();
   let gElement=svg.append("g")
@@ -38,18 +37,20 @@ let loadMap=(countryDetails)=>{
     gElement.attr("transform", d3.event.transform);
     pElement.attr("transform", d3.event.transform);
   }
-
+ let screenWidth=Math.max(1080 || document.documentElement.clientWidth, window.innerWidth);
+  console.log(`900 || ${document.documentElement.clientWidth}, ${window.innerWidth} ${Math.max(900 || document.documentElement.clientWidth, window.innerWidth)}`);
+  console.log(screenWidth);
+ let screenHeight=Math.max(document.documentElement.clientHeight, window.innerHeight || 0); 
   let zoom = d3.zoom()
       .scaleExtent([1, 40])
+      .translateExtent([[0, -100], [(0.8*screenWidth)+100, (0.8*screenHeight) + 100]])
       .on("zoom", zoomed);
   
    svg.call(zoom)
- 
    loadNewCountry(countryData,svg,gElement,pElement,0,1,[]);
    
    svg.append("rect")
-           .attr("x",50)
-           .attr("y",svgHeight/2)
+           .attr("class","zoom-in-position")
            .attr("height",25)
            .attr("width",25)
            .attr("fill","#ffffff")
@@ -60,17 +61,14 @@ let loadMap=(countryDetails)=>{
            });
    
   svg.append("text")
-     .attr("x",57)
-     .attr("y",(svgHeight/2)+18)
      .text("+")
-     .attr("id","zoom-in-button")
+     .attr("id","zoom-in-text")
      .on("click",(d)=>{
         zoomIn(svg,zoom);
      });
 
   svg.append("rect")
-      .attr("x",50)
-      .attr("y",(svgHeight/2)+25)
+      .attr("class","zoom-out-position")
       .attr("height",25)
       .attr("width",25)
       .attr("fill","#ffffff")
@@ -81,10 +79,8 @@ let loadMap=(countryDetails)=>{
       });
     
   svg.append("text")
-      .attr("x",57)
-      .attr("y",(svgHeight/2)+43)
       .text("-")
-      .attr("id","zoom-out-button")
+      .attr("id","zoom-out-text")
       .on("click",(d)=>{
         zoomOut(svg,zoom);
      });
@@ -97,18 +93,11 @@ let zoomIn=(svg,zoom)=>{
 let zoomOut=(svg,zoom)=>{
   svg.transition().call(zoom.scaleBy, 0.7);
 };
-/** Return chart height.*/
-const getChartHeight=()=>500;
-/** Return chart width.*/
-const getChartWidth=()=>1080;
-/** Return chart padding.*/
-const getChartPadding=()=>100;
 /** Add svg in body and return it.*/
-let loadSvg=(height,width)=>{
+let loadSvg=()=>{
   return d3.select("body")
     .append("svg")
-    .attr("height",height)
-    .attr("width",width);
+    .attr("class","game-area-svg");
 };
 /** Return tooltip that will show inforamtion about a rectangle when it is hovered.*/
 let loadTooltip=()=>{
@@ -118,7 +107,7 @@ let loadTooltip=()=>{
            .attr("id","tooltip"); 
 };
 let loadNewCountry=(countryData,svg,gElement,pElement,points,questionNo,alreadyDisplayedCountry)=>{
-  if(questionNo>20){
+  if(questionNo>10){
     return ;
   }
   let noOfAttempts=0;
@@ -143,6 +132,13 @@ let loadNewCountry=(countryData,svg,gElement,pElement,points,questionNo,alreadyD
       showCountryRegionArc(countryData,countryName,pElement,noOfAttempts);
     }
     addColorOnUserSelectedCountry(userSelectedCountry);
+    showTooltip(d3.select(userSelectedCountry).attr("name"));
+    let screenWidth=Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+    if(screenWidth<=980){
+      setTimeout(()=>{
+        hideTooltip();
+      },0800);
+    } 
     if(d3.select(userSelectedCountry).attr("name")===countryName){
       points=points+30-(10*(noOfAttempts-1));
       updatePoints(points);
@@ -215,15 +211,22 @@ let showCountryRegionArc=(countryData,countryName,pElement,noOfAttempts)=>{
            .attr("cy",(d)=>d[1]);*/
       let arcInnerRadius=150;
       let arcOuterRadius=155;
-      if(noOfAttempts===2){
+      let errorRange=75;
+      let screenWidth=Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+      if(noOfAttempts===2 && screenWidth>=720){
         arcInnerRadius=100;
         arcOuterRadius=105;
+      }
+      else if(noOfAttempts===2 && screenWidth<720){
+        arcInnerRadius=70;
+        arcOuterRadius=75;
+        errorRange=35;
       }
       let arc = d3.arc()
                   .innerRadius(arcInnerRadius)
                   .outerRadius(arcOuterRadius);
-      let errorX=getRandomInteger(75);
-      let errorY=getRandomInteger(75);
+      let errorX=getRandomInteger(errorRange);
+      let errorY=getRandomInteger(errorRange);
       errorX*=Math.floor(Math.random()*2)===1?1:-1;
       errorY*=Math.floor(Math.random()*2)===1?1:-1;
       

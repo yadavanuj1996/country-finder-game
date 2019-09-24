@@ -1,3 +1,18 @@
+:root{
+  --svg-width:80%;
+  --zoom-rect-x-pos:50px;
+  --zoom-text-x-pos:57px;
+}
+@media only screen and (min-width:320px) and (max-width:720px){
+  :root{
+    --svg-width:100%;
+    --zoom-rect-x-pos:20px;
+    --zoom-text-x-pos:27px;
+  }
+}
+body{
+  margin:0px;
+}
 h1,h3{
   text-align:center;
 }
@@ -55,13 +70,27 @@ svg{
   stroke: black !important;
 }
 
-#zoom-in-button{
+#zoom-in-text{
+  transform: translate(var(--zoom-text-x-pos,42px), 268px);
   font-size: 20px;
   font-weight: bold;
   cursor: zoom-in;
 }
-#zoom-out-button{
+#zoom-out-text{
+   transform: translate(var(--zoom-text-x-pos,42px), 293px);
   font-size: 30px;
   font-weight: bold;
   cursor: zoom-out;
+}
+.game-area-svg{
+  height:90vh;
+  width: var(--svg-width,100%);
+}
+.zoom-out-position{
+  x:var(--zoom-rect-x-pos,35px);
+  y:275;
+}
+.zoom-in-position{
+  x:var(--zoom-rect-x-pos,35px);
+  y:250;
 }
