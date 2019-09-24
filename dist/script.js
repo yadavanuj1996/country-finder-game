@@ -1,5 +1,3 @@
-// @TODO Add zooming and navigation feature
-// @TODO Increase known countries frequency 
 // @TODO Add blinking effect for right answer if user couldn't answer it 
 document.addEventListener("DOMContentLoaded", () => {
   let countryDataPromise = fetch("https://gist.githubusercontent.com/yadavanuj1996/839c37eb95f4fd2f704194e764998351/raw/c09e1f413ee07b2865c09644f37f275553fa3b26/world-countries.json");
@@ -48,10 +46,6 @@ let loadMap = countryDetails => {
   svg.call(zoom);
 
   loadNewCountry(countryData, svg, gElement, pElement, 0, 1, []);
-  d3.select("#zoom").
-  on("click", d => {
-    zoomIn(svg, zoom);
-  });
 
   svg.append("rect").
   attr("x", 50).
@@ -97,7 +91,6 @@ let loadMap = countryDetails => {
 
 };
 
-
 let zoomIn = (svg, zoom) => {
   svg.transition().call(zoom.scaleBy, 1.3);
 };
@@ -125,7 +118,7 @@ let loadTooltip = () => {
   attr("id", "tooltip");
 };
 let loadNewCountry = (countryData, svg, gElement, pElement, points, questionNo, alreadyDisplayedCountry) => {
-  if (questionNo > 5) {
+  if (questionNo > 20) {
     return;
   }
   let noOfAttempts = 0;
@@ -181,6 +174,10 @@ let loadNewCountry = (countryData, svg, gElement, pElement, points, questionNo, 
 let getUniqueRandomCountryName = (countryData, alreadyDisplayedCountry) => {
   let noOfCountries = countryData.objects.countries1.geometries.length;
   let randomCountrySNo = getRandomInteger(noOfCountries);
+  let knownCountryBuffer = [56, 0, 4, 8, 15, 23, 25, 28, 31, 38, 42, 48, 50, 56, 58, 65, 74, 75, 76, 77, 80, 84, 91, 96, 108, 110, 114, 122, 123, 125, 128, 132, 133,
+  137, 140, 158, 164, 170, 173, 177];
+  if (getRandomInteger(20) % 2 === 0)
+  randomCountrySNo = knownCountryBuffer[getRandomInteger(knownCountryBuffer.length)];
   let countryName = countryData.objects.countries1.geometries[randomCountrySNo].properties.name;
   if (alreadyDisplayedCountry.includes(countryName))
   return getUniqueRandomCountryName(countryData, alreadyDisplayedCountry);
