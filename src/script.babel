@@ -38,8 +38,6 @@ let loadMap=(countryDetails)=>{
     pElement.attr("transform", d3.event.transform);
   }
  let screenWidth=Math.max(1080 || document.documentElement.clientWidth, window.innerWidth);
-  console.log(`900 || ${document.documentElement.clientWidth}, ${window.innerWidth} ${Math.max(900 || document.documentElement.clientWidth, window.innerWidth)}`);
-  console.log(screenWidth);
  let screenHeight=Math.max(document.documentElement.clientHeight, window.innerHeight || 0); 
   let zoom = d3.zoom()
       .scaleExtent([1, 40])
@@ -110,16 +108,31 @@ let loadNewCountry=(countryData,svg,gElement,pElement,points,questionNo,alreadyD
   if(questionNo>10){
     return ;
   }
+  
+  updateQuestionsLeft(questionNo);
+  resetAttemptsLeft();
   let noOfAttempts=0;
   let countryName=getUniqueRandomCountryName(countryData,alreadyDisplayedCountry);
   alreadyDisplayedCountry.push(countryName);
   hideCountryRegionArc();
   showCountryName(countryName);
   d3.select("#tooltip").style("visibility","hidden");
+  
+  let timeForQuestion=40;
+  var timeCounterInterval=setTimeCounterInterval(timeForQuestion);
+  setTimeout(()=>{
+    console.log(`load new country ${countryName} ${noOfAttempts}`);
+    if(noOfAttempts<3){
+      stopInterval(timeCounterInterval,noOfAttempts);
+      loadNewCountry(countryData,svg,gElement,pElement,points,questionNo+1,alreadyDisplayedCountry); 
+    }
+  },timeForQuestion*1000);
+  
   let userSelectedLastChoice;
   let userHoveredLastChoice;
   gElement.on("click",(d,i,nodes)=>{
     noOfAttempts++;
+    updateAttemptsLeft(noOfAttempts);
     let userSelectedCountry=nodes[i]; // nodes[i] refer to the clicked element
     removeOldColorOnUserSelectedCountry(userSelectedLastChoice);
     removeOldColorOnUserHoverCountry(userHoveredLastChoice);
@@ -144,12 +157,19 @@ let loadNewCountry=(countryData,svg,gElement,pElement,points,questionNo,alreadyD
       updatePoints(points);
       removeOldColorOnUserSelectedCountry(userSelectedCountry); // removing present choice
       addColorOnCorrectCountry(userSelectedCountry);
+      console.log(`correct country ${countryName} ${noOfAttempts}`);
+      stopInterval(timeCounterInterval,noOfAttempts);
+      noOfAttempts=3;
       loadNewCountry(countryData,svg,gElement,pElement,points,questionNo+1,alreadyDisplayedCountry);
+      return ;
     }
     
     if(areAllAttemptsExhausted(noOfAttempts)){
       removeOldColorOnUserSelectedCountry(userSelectedCountry);
-      loadNewCountry(countryData,svg,gElement,pElement,points,questionNo+1,alreadyDisplayedCountry); // removing present choice
+      console.log(`attempts exhausted ${countryName} ${noOfAttempts}`);
+      stopInterval(timeCounterInterval,noOfAttempts);
+      noOfAttempts=3;
+      loadNewCountry(countryData,svg,gElement,pElement,points,questionNo+1,alreadyDisplayedCountry); 
     }
           
   });
@@ -261,6 +281,22 @@ let updatePoints=(points)=>{
   d3.select("#points")
     .text(points);
 };
+let updateQuestionsLeft=(qno)=>{
+  d3.select("#questions")
+    .text(10-qno);
+};
+let updateAttemptsLeft=(attemptNo)=>{
+  d3.select("#attmepts")
+    .text(3-attemptNo);
+};
+let resetAttemptsLeft=()=>{
+  d3.select("#attmepts")
+    .text(3);
+}
+let updateTimeLeft=(timeLeft)=>{
+  d3.select("#time")
+    .text(timeLeft);
+};
 let areAllAttemptsExhausted=(noOfAttempts)=>{
   if(noOfAttempts===3)
     return true;
@@ -281,4 +317,22 @@ let getRandomFillColor=()=>{
   let earthFillColor=["#FF3F7D","#B87ED1","#008788","#00C5C8","#004EB7","#E7AB49","#FFF065","#F99BA9","#976b68"];
   
   return earthFillColor[getRandomInteger(8)];
+};
+let setTimeCounterInterval=(timeForQuestion)=>{
+  let timeLeft=timeForQuestion-1;
+  console.log("Interval started");
+  let timeCounter=setInterval(()=>{
+    updateTimeLeft(timeLeft);  
+    timeLeft--;
+  },1000);
+  /*setTimeout(()=>{
+    console.log("Interval closed");
+    stopInterval(timeCounter);    
+  },(timeForQuestion)*1000);*/
+  
+  return timeCounter;
+};
+let stopInterval=async (timeCounter,noOfAttempts)=>{
+  console.log("Interval closed "+noOfAttempts);
+  await clearInterval(timeCounter);
 };
