@@ -153,3 +153,6 @@ svg{
   border-bottom-left-radius: 30px 30px;
   border-bottom-right-radius: 30px 30px; 
 }
+.stop-pointer-events{
+  pointer-events: none;
+}

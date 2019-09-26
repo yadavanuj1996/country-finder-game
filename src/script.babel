@@ -3,9 +3,9 @@
 // @TODO Voice stating country name and yah and nah sound on right/wrong choice.
 // @TODO add different difficulty levels.
 // @TODO Document the code and prepare jsdocs documentation.
-// @TODO Refactor the code.
+// @TODO Refactor the code.c
 document.addEventListener("DOMContentLoaded",() => {
- let countryDataPromise=fetch("https://gist.githubusercontent.com/yadavanuj1996/839c37eb95f4fd2f704194e764998351/raw/c09e1f413ee07b2865c09644f37f275553fa3b26/world-countries.json"); 
+ let countryDataPromise=fetch("https://raw.githubusercontent.com/yadavanuj1996/country-finder-game/master/src/world-countries.json"); 
  
   Promise.resolve(countryDataPromise)
     .then(responses=>responses.text())
@@ -42,11 +42,11 @@ let loadMap=(countryDetails)=>{
   }
  let screenWidth=Math.max(1080 || document.documentElement.clientWidth, window.innerWidth);
  let screenHeight=Math.max(document.documentElement.clientHeight, window.innerHeight || 0); 
-  let zoom = d3.zoom()
-      .scaleExtent([1, 40])
-      .translateExtent([[0, -100], [(0.8*screenWidth)+100, (0.8*screenHeight) + 100]])
-      .on("zoom", zoomed);
-  
+ let zoom = d3.zoom()
+              .scaleExtent([1, 40])
+              .translateExtent([[0, -100], [(0.8*screenWidth)+100, (0.8*screenHeight) + 100]])
+              .on("zoom", zoomed);
+
    svg.call(zoom)
    loadNewCountry(countryData,svg,gElement,pElement,0,1,[]);
    
@@ -120,6 +120,7 @@ let loadNewCountry=(countryData,svg,gElement,pElement,points,questionNo,alreadyD
   alreadyDisplayedCountry.push(countryName);
   hideCountryRegionArc();
   showCountryName(countryName);
+  textToSpeech(countryName);
   d3.select("#tooltip").style("visibility","hidden");
   
   let timeForQuestion=40;
@@ -127,7 +128,8 @@ let loadNewCountry=(countryData,svg,gElement,pElement,points,questionNo,alreadyD
   setTimeout(()=>{
     if(noOfAttempts<3){
       stopInterval(timeCounterInterval,noOfAttempts);
-      loadNewCountry(countryData,svg,gElement,pElement,points,questionNo+1,alreadyDisplayedCountry); 
+      playWrongAnswerAudio();
+      showCorrectAnswerAndLoadNewCountry(countryData,svg,gElement,pElement,points,questionNo+1,alreadyDisplayedCountry);
     }
   },timeForQuestion*1000);
   
@@ -162,7 +164,9 @@ let loadNewCountry=(countryData,svg,gElement,pElement,points,questionNo,alreadyD
       addColorOnCorrectCountry(userSelectedCountry);
       stopInterval(timeCounterInterval,noOfAttempts);
       noOfAttempts=3;
-      loadNewCountry(countryData,svg,gElement,pElement,points,questionNo+1,alreadyDisplayedCountry);
+      playCorrectAnswerAudio();
+      showCorrectAnswerAndLoadNewCountry(countryData,svg,gElement,pElement,points,questionNo+1,alreadyDisplayedCountry);
+      
       return ;
     }
     
@@ -170,7 +174,8 @@ let loadNewCountry=(countryData,svg,gElement,pElement,points,questionNo,alreadyD
       removeOldColorOnUserSelectedCountry(userSelectedCountry);
       stopInterval(timeCounterInterval,noOfAttempts);
       noOfAttempts=3;
-      loadNewCountry(countryData,svg,gElement,pElement,points,questionNo+1,alreadyDisplayedCountry); 
+      playWrongAnswerAudio();
+      showCorrectAnswerAndLoadNewCountry(countryData,svg,gElement,pElement,points,questionNo+1,alreadyDisplayedCountry);
     }
           
   });
@@ -187,7 +192,21 @@ let loadNewCountry=(countryData,svg,gElement,pElement,points,questionNo,alreadyD
     hideTooltip();
     removeOldColorOnUserHoverCountry(userHoveredLastChoice);
   });
-  textToSpeech(countryName);
+};
+let showCorrectAnswerAndLoadNewCountry=(countryData,svg,gElement,pElement,points,questionNo,alreadyDisplayedCountry)=>{
+  stopAllMousePointerEvents();
+  setTimeout(()=>{
+    resumeAllMousePointerEvents();
+		loadNewCountry(countryData,svg,gElement,pElement,points,questionNo,alreadyDisplayedCountry);
+  },1500);
+};
+let playCorrectAnswerAudio=()=>{
+	let audio=new Audio('https://raw.githubusercontent.com/yadavanuj1996/country-finder-game/master/src/audio/correct.mp3');
+    audio.play();
+};
+let playWrongAnswerAudio=()=>{
+	let audio=new Audio('https://raw.githubusercontent.com/yadavanuj1996/country-finder-game/master/src/audio/wrong.mp3');
+    audio.play();
 };
 let getUniqueRandomCountryName=(countryData,alreadyDisplayedCountry)=>{
   let noOfCountries= countryData.objects.countries1.geometries.length;
@@ -353,4 +372,10 @@ let alterBackgroundGradient=(questionNo)=>{
 
 let textToSpeech=(countryName)=>{
   responsiveVoice.speak(countryName);
+};
+let stopAllMousePointerEvents=()=>{
+  d3.select("#svg-holder").classed('stop-pointer-events', true);  
+};
+let resumeAllMousePointerEvents=()=>{
+  d3.select("#svg-holder").classed('stop-pointer-events', false);  
 };
