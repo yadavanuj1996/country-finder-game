@@ -14,7 +14,7 @@
     --details-div-width:100%;
     --details-display: none;
     inline-block;
-  --heading-font-size: 20px;
+    --heading-font-size: 18px;
   }
 }
 body{
