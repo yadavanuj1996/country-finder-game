@@ -1,6 +1,5 @@
 // @TODO Add blinking effect for right answer if user couldn't answer it
 // @TODO Animated hearts on correct answer and thumbs down on wrong choice
-// @TODO Voice stating country name and yah and nah sound on right/wrong choice.
 // @TODO add different difficulty levels.
 // @TODO Document the code and prepare jsdocs documentation.
 // @TODO Refactor the code.c
@@ -26,6 +25,7 @@ let loadMap=(countryDetails)=>{
   let path=d3.geoPath().projection(d3.geoMercator());
   let tooltip=loadTooltip();
   let gElement=svg.append("g")
+                  .attr("id","g-element")
                   .selectAll("path")
                   .data(topojson.feature(countryData, countryData.objects.countries1).features)
                   .enter()
@@ -129,7 +129,7 @@ let loadNewCountry=(countryData,svg,gElement,pElement,points,questionNo,alreadyD
     if(noOfAttempts<3){
       stopInterval(timeCounterInterval,noOfAttempts);
       playWrongAnswerAudio();
-      showCorrectAnswerAndLoadNewCountry(countryData,svg,gElement,pElement,points,questionNo+1,alreadyDisplayedCountry);
+      showCorrectAnswerAndLoadNewCountry(countryData,svg,gElement,pElement,points,questionNo+1,alreadyDisplayedCountry,countryName);
     }
   },timeForQuestion*1000);
   
@@ -161,11 +161,10 @@ let loadNewCountry=(countryData,svg,gElement,pElement,points,questionNo,alreadyD
       points=points+30-(10*(noOfAttempts-1));
       updatePoints(points);
       removeOldColorOnUserSelectedCountry(userSelectedCountry); // removing present choice
-      addColorOnCorrectCountry(userSelectedCountry);
       stopInterval(timeCounterInterval,noOfAttempts);
       noOfAttempts=3;
       playCorrectAnswerAudio();
-      showCorrectAnswerAndLoadNewCountry(countryData,svg,gElement,pElement,points,questionNo+1,alreadyDisplayedCountry);
+      showCorrectAnswerAndLoadNewCountry(countryData,svg,gElement,pElement,points,questionNo+1,alreadyDisplayedCountry,countryName);
       
       return ;
     }
@@ -175,7 +174,7 @@ let loadNewCountry=(countryData,svg,gElement,pElement,points,questionNo,alreadyD
       stopInterval(timeCounterInterval,noOfAttempts);
       noOfAttempts=3;
       playWrongAnswerAudio();
-      showCorrectAnswerAndLoadNewCountry(countryData,svg,gElement,pElement,points,questionNo+1,alreadyDisplayedCountry);
+      showCorrectAnswerAndLoadNewCountry(countryData,svg,gElement,pElement,points,questionNo+1,alreadyDisplayedCountry,countryName);
     }
           
   });
@@ -193,12 +192,35 @@ let loadNewCountry=(countryData,svg,gElement,pElement,points,questionNo,alreadyD
     removeOldColorOnUserHoverCountry(userHoveredLastChoice);
   });
 };
-let showCorrectAnswerAndLoadNewCountry=(countryData,svg,gElement,pElement,points,questionNo,alreadyDisplayedCountry)=>{
+let showCorrectAnswerAndLoadNewCountry=(countryData,svg,gElement,pElement,points,questionNo,alreadyDisplayedCountry,countryName)=>{
   stopAllMousePointerEvents();
+  highlightCorrectAnswer(countryName,countryData);
   setTimeout(()=>{
     resumeAllMousePointerEvents();
 		loadNewCountry(countryData,svg,gElement,pElement,points,questionNo,alreadyDisplayedCountry);
   },1500);
+};
+let highlightCorrectAnswer=(countryName,countryData)=>{
+  for(let i=0;i<180;i++){
+    if(countryData.objects.countries1.geometries[i].properties.name===countryName){
+      let correctAnswerElement=d3.select("#g-element").selectAll("path").filter((d)=>d.properties.name===countryName);
+      correctAnswerElement.classed('blinking-effect', true);  
+      let darkColorInterval=setInterval(()=>{
+        correctAnswerElement.attr("fill","#10ef11");  
+      },0050);
+      let lightColorInterval=setInterval(()=>{
+        correctAnswerElement.attr("fill","#ffffff");  
+      },0100);
+      setTimeout(()=>{
+        clearInterval(darkColorInterval);
+        clearInterval(lightColorInterval);
+        correctAnswerElement.classed('blinking-effect', false);  
+        addColorOnCorrectCountry(correctAnswerElement);
+      },2000);
+      
+      break;
+    }
+  }
 };
 let playCorrectAnswerAudio=()=>{
 	let audio=new Audio('https://raw.githubusercontent.com/yadavanuj1996/country-finder-game/master/src/audio/correct.mp3');
@@ -235,9 +257,9 @@ let showCountryRegionArc=(countryData,countryName,pElement,noOfAttempts)=>{
   for(let i=0;i<180;i++){
     if(countryData.objects.countries1.geometries[i].properties.name===countryName){
       let arcData=countryData.objects.countries1.geometries[i].arcs;
-      let test=JSON.parse(`{"type":"GeometryCollection","geometries":[{"arcs":[[${arcData}]],"type":"Polygon"}]}`);
+      let arcDataTemplate=JSON.parse(`{"type":"GeometryCollection","geometries":[{"arcs":[[${arcData}]],"type":"Polygon"}]}`);
       let path = d3.geoPath().projection(d3.geoMercator());
-      let centroids = topojson.feature(countryData, test).features.map((feature)=>{
+      let centroids = topojson.feature(countryData, arcDataTemplate).features.map((feature)=>{
         return path.centroid(feature);
       });
       
@@ -278,7 +300,8 @@ let showCountryRegionArc=(countryData,countryName,pElement,noOfAttempts)=>{
                       .attr("stroke", "darkslategray")
                       .attr("d", arc({startAngle:0, endAngle:(2*Math.PI)}))
                       .attr("transform", `translate(${centroids[0][0]+errorX},${centroids[0][1]+errorY})`);
-          
+     
+      break;     
     }
   }
  
@@ -296,7 +319,7 @@ let removeOldColorOnUserHoverCountry=(userHoverLastChoice)=>{
   d3.select(userHoverLastChoice).classed('choice-hover-effects', false);
 };
 let addColorOnCorrectCountry=(userSelectedCountry)=>{
-  d3.select(userSelectedCountry).classed('correct-choice-effects', true);  
+  userSelectedCountry.classed('correct-choice-effects', true);  
 };
 let updatePoints=(points)=>{
   d3.select("#points")

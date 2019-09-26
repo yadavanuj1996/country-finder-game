@@ -84,7 +84,11 @@ body{
   stroke-width: 1.5 !important;
   stroke: black !important;
 }
-
+.blinking-effect{
+  paint-order: normal !important;
+  stroke-width: 2.5 !important;
+  stroke: black !important;
+}
 #zoom-in-text{
   transform: translate(var(--zoom-text-x-pos,42px), 268px);
   font-size: 20px;
