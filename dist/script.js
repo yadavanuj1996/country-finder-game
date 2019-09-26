@@ -93,7 +93,7 @@ let zoomOut = (svg, zoom) => {
 };
 /** Add svg in body and return it.*/
 let loadSvg = () => {
-  return d3.select("body").
+  return d3.select("#svg-holder").
   append("svg").
   attr("class", "game-area-svg");
 };
@@ -105,12 +105,13 @@ let loadTooltip = () => {
   attr("id", "tooltip");
 };
 let loadNewCountry = (countryData, svg, gElement, pElement, points, questionNo, alreadyDisplayedCountry) => {
-  if (questionNo > 10) {
+  if (questionNo > getTotalQuestions()) {
     return;
   }
 
   updateQuestionsLeft(questionNo);
   resetAttemptsLeft();
+  updateCompletionIndicator(questionNo);
   let noOfAttempts = 0;
   let countryName = getUniqueRandomCountryName(countryData, alreadyDisplayedCountry);
   alreadyDisplayedCountry.push(countryName);
@@ -325,14 +326,18 @@ let setTimeCounterInterval = timeForQuestion => {
     updateTimeLeft(timeLeft);
     timeLeft--;
   }, 1000);
-  /*setTimeout(()=>{
-              console.log("Interval closed");
-              stopInterval(timeCounter);    
-            },(timeForQuestion)*1000);*/
 
   return timeCounter;
 };
 let stopInterval = async (timeCounter, noOfAttempts) => {
   console.log("Interval closed " + noOfAttempts);
-  await clearInterval(timeCounter);
+  clearInterval(timeCounter);
+};
+let updateCompletionIndicator = questionNo => {
+  let totalQuestions = getTotalQuestions();
+  d3.select("#completion-indicator").
+  style("width", `${questionNo / totalQuestions * 100}%`);
+};
+let getTotalQuestions = () => {
+  return 10;
 };
