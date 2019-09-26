@@ -108,10 +108,10 @@ let loadNewCountry = (countryData, svg, gElement, pElement, points, questionNo, 
   if (questionNo > getTotalQuestions()) {
     return;
   }
-
   updateQuestionsLeft(questionNo);
   resetAttemptsLeft();
   updateCompletionIndicator(questionNo);
+  alterBackgroundGradient(questionNo);
   let noOfAttempts = 0;
   let countryName = getUniqueRandomCountryName(countryData, alreadyDisplayedCountry);
   alreadyDisplayedCountry.push(countryName);
@@ -122,7 +122,6 @@ let loadNewCountry = (countryData, svg, gElement, pElement, points, questionNo, 
   let timeForQuestion = 40;
   var timeCounterInterval = setTimeCounterInterval(timeForQuestion);
   setTimeout(() => {
-    console.log(`load new country ${countryName} ${noOfAttempts}`);
     if (noOfAttempts < 3) {
       stopInterval(timeCounterInterval, noOfAttempts);
       loadNewCountry(countryData, svg, gElement, pElement, points, questionNo + 1, alreadyDisplayedCountry);
@@ -158,7 +157,6 @@ let loadNewCountry = (countryData, svg, gElement, pElement, points, questionNo, 
       updatePoints(points);
       removeOldColorOnUserSelectedCountry(userSelectedCountry); // removing present choice
       addColorOnCorrectCountry(userSelectedCountry);
-      console.log(`correct country ${countryName} ${noOfAttempts}`);
       stopInterval(timeCounterInterval, noOfAttempts);
       noOfAttempts = 3;
       loadNewCountry(countryData, svg, gElement, pElement, points, questionNo + 1, alreadyDisplayedCountry);
@@ -167,7 +165,6 @@ let loadNewCountry = (countryData, svg, gElement, pElement, points, questionNo, 
 
     if (areAllAttemptsExhausted(noOfAttempts)) {
       removeOldColorOnUserSelectedCountry(userSelectedCountry);
-      console.log(`attempts exhausted ${countryName} ${noOfAttempts}`);
       stopInterval(timeCounterInterval, noOfAttempts);
       noOfAttempts = 3;
       loadNewCountry(countryData, svg, gElement, pElement, points, questionNo + 1, alreadyDisplayedCountry);
@@ -321,7 +318,6 @@ let getRandomFillColor = () => {
 };
 let setTimeCounterInterval = timeForQuestion => {
   let timeLeft = timeForQuestion - 1;
-  console.log("Interval started");
   let timeCounter = setInterval(() => {
     updateTimeLeft(timeLeft);
     timeLeft--;
@@ -330,7 +326,6 @@ let setTimeCounterInterval = timeForQuestion => {
   return timeCounter;
 };
 let stopInterval = async (timeCounter, noOfAttempts) => {
-  console.log("Interval closed " + noOfAttempts);
   clearInterval(timeCounter);
 };
 let updateCompletionIndicator = questionNo => {
@@ -340,4 +335,14 @@ let updateCompletionIndicator = questionNo => {
 };
 let getTotalQuestions = () => {
   return 10;
+};
+let alterBackgroundGradient = questionNo => {
+  if (questionNo % 2 == 0) {
+    d3.select("body").classed('addLightGradient', false);
+    d3.select("body").classed('addDarkGradient', true);
+  } else
+  {
+    d3.select("body").classed('addDarkGradient', false);
+    d3.select("body").classed('addLightGradient', true);
+  }
 };
