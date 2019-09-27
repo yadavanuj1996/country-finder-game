@@ -1,24 +1,26 @@
 <!Doctype html>
 <html lang="en-US">
+
 <head>
   <title>Geo Country Map</title>
   <meta charset="utf-8">
   <meta name="author" content="Anuj Yadav">
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
   <meta name="description" content="Solution for Choropleth Map for freecodecamp project, this uses d3 library for charting purpose">
-   <meta name="keywords" content="Geography,world map,geography game,map,earth,game">
+  <meta name="keywords" content="Geography,world map,geography game,map,earth,game">
   <script src="https://d3js.org/d3.v5.min.js"></script>
   <script src="https://d3js.org/topojson.v2.min.js">
   </script>
- <script src="https://code.responsivevoice.org/responsivevoice.js?key=Jmfc3A8k"></script>
+  <script src="https://code.responsivevoice.org/responsivevoice.js?key=Jmfc3A8k"></script>
   <script src="./script.babel"></script>
   <link rel="stylesheet" href="./style.css">
 </head>
+
 <body>
   <div id="details-div">
     <p id="points-holder">P<span class="sm-hidden">oints</span>: <span id="points">0</span></p>
     <p id="attempts-holder">A<span class="sm-hidden">ttempts Left</span>: <span id="attmepts">3</span></p>
-  <h2 id="country-name">Country Name:</h2>
+    <h2 id="country-name">Country Name:</h2>
     <p id="questions-holder">Q<span class="sm-hidden">uestions Left</span>: <span id="questions">10</span></p>
     <p id="time-holder">T<span class="sm-hidden">ime Remaining</span>: <span id="time">20</span>s</p>
   </div>
@@ -26,17 +28,21 @@
   <div id="completion-indicator-holder">
     <div id="completion-indicator"></div>
   </div>
+
+  <div class="heart movement-1 hide-display"></div>
+  <div class="heart movement-2 hide-display"></div>
+  <div class="heart movement-3 hide-display"></div>
+  <div class="heart movement-4 hide-display"></div>
+  <div class="heart movement-5 hide-display"></div>
+  <div class="heart movement-6 hide-display"></div>
+
+  <div class="hide-display" id="heart-holder">
+    <div class="mobile-heart"></div>
+  </div>
+  <div class="hide-display" id="x-mark-holder">
+    <div class="x-mark x-mark-zoom-in-out"></div>
+  </div>
   
-<div class="heart movement-1 hide-hearts"></div>
-<div class="heart movement-2 hide-hearts"></div>
-<div class="heart movement-3 hide-hearts"></div>
-<div class="heart movement-4 hide-hearts"></div>
-<div class="heart movement-5 hide-hearts"></div>
-<div class="heart movement-6 hide-hearts"></div>
-
- <div class="hide-hearts" id="heart-holder"> 
-<div class="mobile-heart"></div>
-</div>
-
 </body>
+
 </html>

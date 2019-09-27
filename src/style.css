@@ -19,6 +19,7 @@
 }
 body{
   margin:5px;
+  height:100vh !important;
 }
 .addDarkGradient{
     background: linear-gradient(35deg, #16a085, #f4d03f);
@@ -166,7 +167,7 @@ svg{
   
 
   
-  @keyframes color {
+@keyframes color {
     0% {
       background-color: pink;
     }
@@ -505,12 +506,86 @@ svg{
   }
 
 }
-.show-hearts{
+
+.show-display{
   display: block !important; 
 }
-.hide-hearts{
+.hide-display{
   display: none !important; 
 }
 
-  
 
+/* x-mark or wrong choice symbol CSS */
+@media only screen and (min-width: 320px) and (max-width: 720px){
+  .x-mark {
+    position: absolute;
+    margin: auto;
+    top: 0px;
+    right: 0;
+    bottom: 0;
+    left: 5px;
+    height: 10px;
+    width: 10px;
+    transform: rotate(-45deg);   
+  }
+  .x-mark:after {
+    background-color: pink;
+    content: "";
+    border-radius: 2%;
+    position: absolute;
+    width: 20px;
+    height: 5px;
+    top: 0px;
+    left: -7px;
+    animation-name: color;
+    animation-duration: 1s;
+    animation-iteration-count: infinite;
+  }
+  .x-mark:before {
+    background-color: pink;
+    content: "";
+    border-radius: 2%;
+    position: absolute;
+    height: 20px;
+    width: 5px;
+    top: -7px;
+    left: 0px;
+    animation-name: color;
+    animation-duration: 1s;
+    animation-iteration-count: infinite;
+  }
+  .x-mark-zoom-in-out{
+    animation-name: zoom-in-out;
+    animation-duration: 1.8s;
+    animation-iteration-count: infinite;
+  }
+  @keyframes zoom-in-out {
+    0% {
+      transform: scale(0.6) rotate(-45deg);
+    }
+    25% {
+      transform: scale(0.8) rotate(-45deg);
+    }
+    50% {
+      transform: scale(1) rotate(-45deg);
+    }
+    75% {
+      transform: scale(0.8) rotate(-45deg);
+    }
+    100% {
+      transform: scale(0.6) rotate(-45deg);
+    }
+  }
+  #x-mark-holder{
+    position: absolute !important;
+    margin: auto;
+    height: 30px;
+    width: 30px;
+    border: 2px solid black;
+    border-radius: 50%;
+    background-color: white;
+    top:90%;
+    z-index: 1;
+    overflow: hidden !important;
+  }
+}

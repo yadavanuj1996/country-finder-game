@@ -131,7 +131,7 @@ let loadNewCountry=(countryData,svg,gElement,pElement,points,questionNo,alreadyD
     if(noOfAttempts<3){
       stopInterval(timeCounterInterval,noOfAttempts);
       playWrongAnswerAudio();
-      showCorrectAnswerAndLoadNewCountry(countryData,svg,gElement,pElement,points,questionNo+1,alreadyDisplayedCountry,countryName);
+      showXMark(); showCorrectAnswerAndLoadNewCountry(countryData,svg,gElement,pElement,points,questionNo+1,alreadyDisplayedCountry,countryName);
     }
   },timeForQuestion*1000);
   
@@ -161,8 +161,8 @@ let loadNewCountry=(countryData,svg,gElement,pElement,points,questionNo,alreadyD
     } 
     if(d3.select(userSelectedCountry).attr("name")===countryName){
       stopInterval(timeCounterInterval,noOfAttempts);
-      showHearts();
       playCorrectAnswerAudio();
+      showHearts();
       points=points+30-(10*(noOfAttempts-1));
       updatePoints(points);
       removeOldColorOnUserSelectedCountry(userSelectedCountry); // removing present choice
@@ -173,10 +173,11 @@ let loadNewCountry=(countryData,svg,gElement,pElement,points,questionNo,alreadyD
     }
     
     if(areAllAttemptsExhausted(noOfAttempts)){
-      removeOldColorOnUserSelectedCountry(userSelectedCountry);
       stopInterval(timeCounterInterval,noOfAttempts);
-      noOfAttempts=3;
       playWrongAnswerAudio();
+      removeOldColorOnUserSelectedCountry(userSelectedCountry);
+      noOfAttempts=3;
+      showXMark();
       showCorrectAnswerAndLoadNewCountry(countryData,svg,gElement,pElement,points,questionNo+1,alreadyDisplayedCountry,countryName);
     }
           
@@ -200,6 +201,7 @@ let showCorrectAnswerAndLoadNewCountry=(countryData,svg,gElement,pElement,points
   highlightCorrectAnswer(countryName,countryData);
   setTimeout(()=>{
     hideHearts();
+    hideXMark();
     resumeAllMousePointerEvents();
 		loadNewCountry(countryData,svg,gElement,pElement,points,questionNo,alreadyDisplayedCountry);
   },1500);
@@ -408,14 +410,22 @@ let resumeAllMousePointerEvents=()=>{
   d3.select("#svg-holder").classed('stop-pointer-events', false);  
 };
 let showHearts=()=>{
-  d3.selectAll(".heart").classed('show-hearts', true); 
-  d3.selectAll(".heart").classed('hide-hearts', false); 
-  d3.selectAll("#heart-holder").classed('show-hearts', true); 
-  d3.selectAll("#heart-holder").classed('hide-hearts', false); 
+  d3.selectAll(".heart").classed('show-display', true); 
+  d3.selectAll(".heart").classed('hide-display', false); 
+  d3.selectAll("#heart-holder").classed('show-display', true); 
+  d3.selectAll("#heart-holder").classed('hide-display', false); 
 };
 let hideHearts=()=>{
-  d3.selectAll(".heart").classed('show-hearts', false); 
-  d3.selectAll(".heart").classed('hide-hearts', true); 
-  d3.selectAll("#heart-holder").classed('show-hearts', false); 
-  d3.selectAll("#heart-holder").classed('hide-hearts', true); 
+  d3.selectAll(".heart").classed('show-display', false); 
+  d3.selectAll(".heart").classed('hide-display', true); 
+  d3.selectAll("#heart-holder").classed('show-display', false); 
+  d3.selectAll("#heart-holder").classed('hide-display', true); 
+};
+let showXMark=()=>{
+  d3.selectAll("#x-mark-holder").classed('show-display', true); 
+  d3.selectAll("#x-mark-holder").classed('hide-display', false); 
+};
+let hideXMark=()=>{
+  d3.selectAll("#x-mark-holder").classed('show-display', false); 
+  d3.selectAll("#x-mark-holder").classed('hide-display', true); 
 };
