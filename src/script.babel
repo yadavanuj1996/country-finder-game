@@ -1,8 +1,10 @@
-// @TODO Add blinking effect for right answer if user couldn't answer it
 // @TODO Animated hearts on correct answer and thumbs down on wrong choice
 // @TODO add different difficulty levels.
 // @TODO Document the code and prepare jsdocs documentation.
-// @TODO Refactor the code.c
+// @TODO Refactor the code.
+// @TODO Background color change
+// @TODO Increase the completion Bar height.
+// @TODO Add Quit feature to quit the game in between.
 document.addEventListener("DOMContentLoaded",() => {
  let countryDataPromise=fetch("https://raw.githubusercontent.com/yadavanuj1996/country-finder-game/master/src/world-countries.json"); 
  
@@ -158,13 +160,14 @@ let loadNewCountry=(countryData,svg,gElement,pElement,points,questionNo,alreadyD
       },0800);
     } 
     if(d3.select(userSelectedCountry).attr("name")===countryName){
+      stopInterval(timeCounterInterval,noOfAttempts);
+      showHearts();
+      playCorrectAnswerAudio();
       points=points+30-(10*(noOfAttempts-1));
       updatePoints(points);
       removeOldColorOnUserSelectedCountry(userSelectedCountry); // removing present choice
-      stopInterval(timeCounterInterval,noOfAttempts);
       noOfAttempts=3;
-      playCorrectAnswerAudio();
-      showCorrectAnswerAndLoadNewCountry(countryData,svg,gElement,pElement,points,questionNo+1,alreadyDisplayedCountry,countryName);
+       showCorrectAnswerAndLoadNewCountry(countryData,svg,gElement,pElement,points,questionNo+1,alreadyDisplayedCountry,countryName);
       
       return ;
     }
@@ -196,6 +199,7 @@ let showCorrectAnswerAndLoadNewCountry=(countryData,svg,gElement,pElement,points
   stopAllMousePointerEvents();
   highlightCorrectAnswer(countryName,countryData);
   setTimeout(()=>{
+    hideHearts();
     resumeAllMousePointerEvents();
 		loadNewCountry(countryData,svg,gElement,pElement,points,questionNo,alreadyDisplayedCountry);
   },1500);
@@ -226,6 +230,7 @@ let playCorrectAnswerAudio=()=>{
 	let audio=new Audio('https://raw.githubusercontent.com/yadavanuj1996/country-finder-game/master/src/audio/correct.mp3');
     audio.play();
 };
+
 let playWrongAnswerAudio=()=>{
 	let audio=new Audio('https://raw.githubusercontent.com/yadavanuj1996/country-finder-game/master/src/audio/wrong.mp3');
     audio.play();
@@ -401,4 +406,16 @@ let stopAllMousePointerEvents=()=>{
 };
 let resumeAllMousePointerEvents=()=>{
   d3.select("#svg-holder").classed('stop-pointer-events', false);  
+};
+let showHearts=()=>{
+  d3.selectAll(".heart").classed('show-hearts', true); 
+  d3.selectAll(".heart").classed('hide-hearts', false); 
+  d3.selectAll("#heart-holder").classed('show-hearts', true); 
+  d3.selectAll("#heart-holder").classed('hide-hearts', false); 
+};
+let hideHearts=()=>{
+  d3.selectAll(".heart").classed('show-hearts', false); 
+  d3.selectAll(".heart").classed('hide-hearts', true); 
+  d3.selectAll("#heart-holder").classed('show-hearts', false); 
+  d3.selectAll("#heart-holder").classed('hide-hearts', true); 
 };

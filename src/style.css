@@ -24,8 +24,8 @@ body{
     background: linear-gradient(35deg, #16a085, #f4d03f);
 }
 .addLightGradient{
-   background: linear-gradient(35deg, #ccffff, #ffcccc);
-  background-image: linear-gradient(35deg,#8a2387,#e94057,#f27121);
+   background: linear-gradient(35deg, #ccffff 0%, #ffcccc 0%);
+  background-image: linear-gradient(35deg,#ad5287,#c2403d,#f0802f);
 }
 h1,h3{
   text-align:center;
@@ -160,3 +160,357 @@ svg{
 .stop-pointer-events{
   pointer-events: none;
 }
+
+/* CSS for hearts */
+
+  
+
+  
+  @keyframes color {
+    0% {
+      background-color: pink;
+    }
+    25% {
+      background-color: red;
+    }
+    50% {
+      background-color: #ef102c;
+    }
+    75% {
+      background-color: #c43b42;
+    }
+    100% {
+      background-color: #fc0383;
+    }
+  } 
+@media only screen and (min-width: 721px){
+  .heart {
+    position: absolute;
+    margin: auto;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-color: pink;
+    height: 20px;
+    width: 20px;
+    transform: rotate(-45deg);
+  }
+  .heart:after {
+    background-color: pink;
+    content: "";
+    border-radius: 50%;
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    top: 0px;
+    left: 10px;
+    animation-name: color;
+    animation-duration: 1.8s;
+    animation-iteration-count: infinite;
+  }
+  .heart:before {
+    background-color: pink;
+    content: "";
+    border-radius: 50%;
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    top: -10px;
+    left: 0px;
+    animation-name: color;
+    animation-duration: 1.8s;
+    animation-iteration-count: infinite;
+  }
+
+  @keyframes movement-anim-1{
+    0% {
+      background-color: pink;
+      top:80%;
+      right:80%;
+      transform: scale(0.6) rotate(-45deg);
+    }
+    25% {
+      background-color: red;
+      top:40%;
+      right:80%;
+      transform: scale(0.8) rotate(-45deg);
+    }
+    50% {
+      background-color: #ef102c;
+      top:0%;
+      right:80%;
+      transform: scale(1) rotate(-45deg);
+    }
+    75% {
+      background-color: #c43b42;
+      bottom:40%;
+      right:80%;
+      transform: scale(0.8) rotate(-45deg);
+    }
+    100% {
+      background-color: #fc0383;
+      bottom:80%;
+      right:80%;
+      transform: scale(0.6) rotate(-45deg);
+    }
+  } 
+  @keyframes movement-anim-2{
+    0% {
+      background-color: pink;
+      top:80%;
+      right:80%;
+      transform: scale(0.6) rotate(-45deg);
+    }
+    25% {
+      background-color: red;
+      top:40%;
+      right:85%;
+      transform: scale(0.8) rotate(-45deg);
+    }
+    50% {
+      background-color: #ef102c;
+      top:0%;
+      right:90%;
+      transform: scale(1) rotate(-45deg);
+    }
+    75% {
+      background-color: #c43b42;
+      bottom:40%;
+      right:95%;
+      transform: scale(0.8) rotate(-45deg);
+    }
+    100% {
+      background-color: #fc0383;
+      bottom:80%;
+      right:90%;
+      transform: scale(0.6) rotate(-45deg);
+    }
+  } 
+  @keyframes movement-anim-3{
+    0% {
+      background-color: pink;
+      top:80%;
+      right:80%;
+      transform: scale(0.6) rotate(-45deg);
+    }
+    25% {
+      background-color: red;
+      top:40%;
+      right:75%;
+      transform: scale(0.8) rotate(-45deg);
+    }
+    50% {
+      background-color: #ef102c;
+      top:0%;
+      right:70%;
+      transform: scale(1) rotate(-45deg);
+    }
+    75% {
+      background-color: #c43b42;
+      bottom:40%;
+      right:65%;
+      transform: scale(0.8) rotate(-45deg);
+    }
+    100% {
+      background-color: #fc0383;
+      bottom:80%;
+      right:70%;
+      transform: scale(0.6) rotate(-45deg);
+    }
+  } 
+  @keyframes movement-anim-4{
+    0% {
+      background-color: pink;
+      top:80%;
+      left:80%;
+      transform: scale(0.6) rotate(-45deg);
+    }
+    25% {
+      background-color: red;
+      top:40%;
+      left:80%;
+      transform: scale(0.8) rotate(-45deg);
+    }
+    50% {
+      background-color: #ef102c;
+      top:0%;
+      left:80%;
+      transform: scale(1) rotate(-45deg);
+    }
+    75% {
+      background-color: #c43b42;
+      bottom:40%;
+      left:80%;
+      transform: scale(0.8) rotate(-45deg);
+    }
+    100% {
+      background-color: #fc0383;
+      bottom:80%;
+      left:80%;
+      transform: scale(0.6) rotate(-45deg);
+    }
+  } 
+  @keyframes movement-anim-5{
+    0% {
+      background-color: pink;
+      top:80%;
+      left:80%;
+      transform: scale(0.6) rotate(-45deg);
+    }
+    25% {
+      background-color: red;
+      top:40%;
+      left:85%;
+      transform: scale(0.8) rotate(-45deg);
+    }
+    50% {
+      background-color: #ef102c;
+      top:0%;
+      left:90%;
+      transform: scale(1) rotate(-45deg);
+    }
+    75% {
+      background-color: #c43b42;
+      bottom:40%;
+      left:95%;
+      transform: scale(0.8) rotate(-45deg);
+    }
+    100% {
+      background-color: #fc0383;
+      bottom:80%;
+      left:90%;
+      transform: scale(0.6) rotate(-45deg);
+    }
+  } 
+  @keyframes movement-anim-6{
+    0% {
+      background-color: pink;
+      top:80%;
+      left:80%;
+      transform: scale(0.6) rotate(-45deg);
+    }
+    25% {
+      background-color: red;
+      top:40%;
+      left:75%;
+      transform: scale(0.8) rotate(-45deg);
+    }
+    50% {
+      background-color: #ef102c;
+      top:0%;
+      left:70%;
+      transform: scale(1) rotate(-45deg);
+    }
+    75% {
+      background-color: #c43b42;
+      bottom:40%;
+      left:65%;
+      transform: scale(0.8) rotate(-45deg);
+    }
+    100% {
+      background-color: #fc0383;
+      bottom:80%;
+      left:70%;
+      transform: scale(0.6) rotate(-45deg);
+    }
+  } 
+
+  .movement-1{
+    animation-name: movement-anim-1;
+    animation-duration: 1.8s;
+    animation-iteration-count: infinite;
+  }
+  .movement-2{
+    animation-name: movement-anim-2;
+    animation-duration: 1.8s;
+    animation-iteration-count: infinite;
+  }
+  .movement-3{
+    animation-name: movement-anim-3;
+    animation-duration: 1.8s;
+    animation-iteration-count: infinite;
+  }
+  .movement-4{
+    animation-name: movement-anim-4;
+    animation-duration: 1.8s;
+    animation-iteration-count: infinite;  
+  }
+  .movement-5{
+    animation-name: movement-anim-5;
+    animation-duration: 1.8s;
+    animation-iteration-count: infinite;
+  }
+  .movement-6{
+  animation-name: movement-anim-6;
+  animation-duration: 1.8s;
+  animation-iteration-count: infinite;
+  }
+}
+@media only screen and (min-width: 320px) and (max-width:720px){
+  #heart-holder{
+  position: absolute !important;
+  margin: auto;
+  height: 30px;
+  width: 30px;
+  border: 2px solid black;
+  border-radius: 50%;
+  background-color: white;
+  top:90%;
+  z-index: 1;
+  overflow: hidden !important;
+}
+  .mobile-heart {
+    position: absolute;
+    margin: auto;
+    top: 0;
+    right: 0;
+    bottom: 20px;
+    left: 0;
+    background-color: #c43b42;
+    height: 10px;
+    width: 10px;
+    top:88.5%;
+    transform: rotate(-45deg);
+    z-index:2;
+    animation-name: color;
+    animation-duration: 1.8s;
+    animation-iteration-count: infinite;
+  }
+  .mobile-heart:after {
+    background-color: #c43b42;
+    content: "";
+    border-radius: 50%;
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    top: 0px;
+    left: 6px;
+    animation-name: color;
+    animation-duration: 1.8s;
+    animation-iteration-count: infinite;
+  }
+  .mobile-heart:before {
+    background-color: #c43b42;
+    content: "";
+    border-radius: 50%;
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    top: -6px;
+    left: 0px;
+    animation-name: color;
+    animation-duration: 1.8s;
+    animation-iteration-count: infinite;
+  }
+
+}
+.show-hearts{
+  display: block !important; 
+}
+.hide-hearts{
+  display: none !important; 
+}
+
+  
+
