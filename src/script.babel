@@ -6,7 +6,7 @@
 // @TODO Increase the completion Bar height.
 // @TODO Add Quit feature to quit the game in between.
 document.addEventListener("DOMContentLoaded",() => {
- let countryDataPromise=fetch("https://raw.githubusercontent.com/yadavanuj1996/country-finder-game/master/src/world-countries.json"); 
+ let countryDataPromise=fetch("https://raw.githubusercontent.com/yadavanuj1996/country-finder-game/master/src/data/world-countries.json"); 
  
   Promise.resolve(countryDataPromise)
     .then(responses=>responses.text())
