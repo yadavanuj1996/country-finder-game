@@ -19,7 +19,7 @@
 }
 body{
   margin:5px;
-  height:100vh !important;
+  height:98vh !important;
 }
 .addDarkGradient{
     background: linear-gradient(35deg, #16a085, #f4d03f);
@@ -103,7 +103,7 @@ body{
   cursor: zoom-out;
 }
 .game-area-svg{
-  height:90vh;
+  height:85vh;
   width: var(--svg-width,100%);
 }
 .zoom-out-position{
@@ -143,7 +143,7 @@ svg{
   border-bottom-left-radius: 20px 20px;
   border-bottom-right-radius: 20px 20px; 
   width: var(--svg-width,80%);
-  height:2vh;
+  height:4vh;
 }
 #completion-indicator{
     width: 10%;
