@@ -1,10 +1,8 @@
-// @TODO Animated hearts on correct answer and thumbs down on wrong choice
 // @TODO add different difficulty levels.
 // @TODO Document the code and prepare jsdocs documentation.
 // @TODO Refactor the code.
-// @TODO Background color change
-// @TODO Increase the completion Bar height.
 // @TODO Add Quit feature to quit the game in between.
+// @TODO Add missile effect on correct answer
 document.addEventListener("DOMContentLoaded",() => {
  let countryDataPromise=fetch("https://raw.githubusercontent.com/yadavanuj1996/country-finder-game/master/src/data/world-countries.json"); 
  
@@ -22,6 +20,7 @@ document.addEventListener("DOMContentLoaded",() => {
 *  all eductaion attainment percent of all the counties corresponding with county id.
 */
 let loadMap=(countryDetails)=>{
+  
   const countryData=JSON.parse(countryDetails);
   let svg=loadSvg();
   let path=d3.geoPath().projection(d3.geoMercator());
