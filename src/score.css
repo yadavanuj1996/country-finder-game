@@ -9,26 +9,31 @@ body{
 }
 #sidebar{
   width: 20%;
-  height: 100vh;
   background-color: #fdad2c;
   display: flex;
   flex-direction: column;
-  justify-content:space-between;
 }
 #main-div{
   width: 60%;
   background-color: #e3e3f9;
+  display: flex;
+  flex-direction: column;
 }
 #score-div{
   width: 20%;
   background-color: #6b2b58; !important;
 }
 #game-details{
-  height: 60%;
+  width:100%;
+  height: 75%;
+  display: flex;
+  flex-direction: column;
+  justify-content:space-between;
+  padding: 5px 0 5px 0;
 }
 #follow-us-div{
-  background-color: #fe5366;
   height: 25%;
+  background-color: #fe5366;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -56,7 +61,7 @@ body{
   padding-right: 10%;
   width: 80%;
   background-color: #ffffff;
-    font-family: 'Questrial', sans-serif;
+  font-family: 'Questrial', sans-serif;
 }
 h1{
   text-align: center;
@@ -69,6 +74,12 @@ h3{
   font-size: 20px;
   line-height:25px;
 }
+h6{
+  font-size: 14px;
+  text-align: center;
+  padding: 5px 0 5px 0;
+  margin: 0;
+}
 img{
   width: 100%;
   height: auto;
@@ -77,17 +88,24 @@ img{
 }
 #present-score-details{
   width:100%;
+  height:60%;
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: center;
   background-color: #ffffff;
+  padding: 5px 0 5px 0;
+  
+}
+#heading-section{
+ height: 15%; 
 }
 #present-score-img-div{
   width: 40% !important;   
 }
 #present-score-text-div{
   width: 60% !important;
+  height: 90%;
   display: flex;
   flex-direction: column;
   justify-content:space-around;
@@ -111,14 +129,14 @@ img{
   height:50%;
 }
 .present-score-card{
-  background-color:#e3e3f9;
+  background-color: #e3e3f9;
   border-radius: 5px;
   display: flex;
   flex-direction: column;
   justify-content: space-around;
   align-items: center;
   border: 0.5px solid #757cff;
-  box-shadow: 0 10px 20px #757cff, 0 6px 6px #757cff;
+  box-shadow: 0 10px 20px #757cff, 0 6px 6px #757cff;  
 }
 .no-padding{
   margin: 10px;
@@ -127,11 +145,47 @@ img{
   font-size: 18px;
   font-weight: bold;
 }
+
 .present-score-card-sub-heading{
   font-size: 14px;
   font-weight: bold;
 }
+#user-search{
+  height: 23.5%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+}
+#user-card-div{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+.user-card{
+  height: 40px;
+  padding: 0 10px 0 5px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  border-radius:5px;
+  margin-left: 10%;
+  margin-right: 10%;
+  width: 40%;
+  
+}
+#user-search-textbox{
+  border: 2px solid #6b2b58;
+  border-radius: 5px;
+  margin-left: 5%;
+  margin-right: 10%;
+  width: 20%;
+  height: 20px;
+}
 
+.white-background{
+  background-color: white;
+}
 /* CSS for score-div*/
 #high-score-div{
   background-color:#fdad2c;
@@ -177,3 +231,65 @@ img{
 .no-bottom-margin{
   margin-bottom: 0;
 }
+/*CSS for scoremeter*/
+#scorer-holder{
+  width:100%;
+  position: relative;
+  overflow: hidden;
+}
+
+#scorer-background{
+  width: 200px;
+  height: 100px;
+  background-color: #fff;
+  border-radius: 200px 200px 0 0; 
+  overflow: hidden;
+  border: 10px solid #fdad2c;
+}
+
+#scorer-color-zone {
+  border-radius: 200px 200px 0 0;
+  margin: 0;
+  background: red;
+  width: 200px;
+  height: 100px;
+  transform-origin: 50% 100%;
+  animation-name: color-fill;
+  animation-duration: 2s;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+  position: relative;
+}
+
+.scorer-tick{
+  position: absolute;
+  bottom: 0px;
+  width: 100%;
+  height: 4px;
+  transform-origin: top center;
+  transform: rotate(0deg);
+  background-color: #fdad2c;
+}
+
+
+@keyframes color-fill {
+  0% {
+    background-color: green;
+    transform: rotate(180deg);
+  }
+  33% {
+    background-color: yellow;
+    transform: rotate(228deg);
+  }
+  66% {
+    background-color: orange;
+    transform: rotate(276deg);
+  }
+  100% {
+    background-color: #f35366;
+    transform: rotate(324deg);
+  }
+}
+
+
+
