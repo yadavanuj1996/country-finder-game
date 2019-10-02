@@ -4,6 +4,7 @@
 // @TODO Add Quit feature to quit the game in between.
 // @TODO Add missile effect on correct answer
 document.addEventListener("DOMContentLoaded",() => {
+ redirectOnDirectURLAccess();
  let countryDataPromise=fetch("https://raw.githubusercontent.com/yadavanuj1996/country-finder-game/master/src/data/world-countries.json"); 
  
   Promise.resolve(countryDataPromise)
@@ -11,14 +12,20 @@ document.addEventListener("DOMContentLoaded",() => {
     .then(data=>{
       loadMap(data);
 	  })	
-  });
-/** 
-*  This function will load the choropleth map.
-*  @param {Array<Object>} tempDataset The county dataset that represents all 
-*  the counties of US used for construcing the chart.
-*  @param {Array<Object>} educationDetails The education dataset that represents 
-*  all eductaion attainment percent of all the counties corresponding with county id.
-*/
+});
+
+let redirectOnDirectURLAccess=()=>{
+  let difficultyLevel=localStorage.getItem('difficulty');
+  
+  if(difficultyLevel===null)
+	window.location.href="./home.html";
+};
+
+window.onunload =()=>{
+  localStorage.removeItem("difficulty");
+  return '';
+};
+
 let loadMap=(countryDetails)=>{
   
   const countryData=JSON.parse(countryDetails);
@@ -110,6 +117,7 @@ let loadTooltip=()=>{
 };
 let loadNewCountry=(countryData,svg,gElement,pElement,points,questionNo,alreadyDisplayedCountry)=>{
   if(questionNo > getTotalQuestions()){
+	loadScore(points);
     return ;
   }
   updateQuestionsLeft(questionNo);
@@ -195,6 +203,13 @@ let loadNewCountry=(countryData,svg,gElement,pElement,points,questionNo,alreadyD
     removeOldColorOnUserHoverCountry(userHoveredLastChoice);
   });
 };
+
+let loadScore=(points)=>{
+  localStorage.setItem('points', points);
+  window.onunload='';
+  window.location.href="./score.html";
+};
+
 let showCorrectAnswerAndLoadNewCountry=(countryData,svg,gElement,pElement,points,questionNo,alreadyDisplayedCountry,countryName)=>{
   stopAllMousePointerEvents();
   highlightCorrectAnswer(countryName,countryData);
@@ -241,7 +256,9 @@ let getUniqueRandomCountryName=(countryData,alreadyDisplayedCountry)=>{
   let randomCountrySNo=getRandomInteger(noOfCountries);
   let knownCountryBuffer=[56,0,4,8,15,23,25,28,31,38,42,48,50,56,58,65,74,75,76,77,80,84,91,96,108,110,114,122,123,125,128,132,133,
 137,140,158,164,170,173,177];
-  if(getRandomInteger(20)%2===0)
+  let difficultyLevel=getDifficultyLevel();
+  
+  if(getRandomInteger(20)%difficultyLevel===0)
     randomCountrySNo=knownCountryBuffer[getRandomInteger(knownCountryBuffer.length)];
   let countryName=countryData.objects.countries1.geometries[randomCountrySNo].properties.name;
   if(alreadyDisplayedCountry.includes(countryName))
@@ -249,6 +266,19 @@ let getUniqueRandomCountryName=(countryData,alreadyDisplayedCountry)=>{
   
   return countryName;
 };
+
+let getDifficultyLevel=()=>{
+	let difficulty=localStorage.getItem("difficulty");
+	let level=2;
+	if(difficulty==="Easy")
+		level=2;
+	else if(difficulty==="Intermediate")
+		level=4;
+	else if(difficulty==="Hard")
+		level=0;
+};
+
+
 let getRandomInteger=(maxOfRange)=>{
   return Math.floor(Math.random()*Math.floor(maxOfRange));
 };

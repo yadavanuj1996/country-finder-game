@@ -190,3 +190,7 @@ h4{
 .scorer-card-name{
   width: 60%;
 }
+/* for js file use*/
+.purple-background{
+	background-color: #6b2b58 !important; 
+}
