@@ -77,7 +77,7 @@ document.addEventListener("DOMContentLoaded",()=>{
 			
 	});
 	
-	//redirectOnDirectURLAccess(difficultyLevel,score);
+	redirectOnDirectURLAccess(difficultyLevel,score);
 	scoreElement.innerHTML=score;
 	difficultyElement.innerHTML=difficultyLevel;
 	

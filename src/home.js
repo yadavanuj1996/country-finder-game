@@ -8,7 +8,6 @@ document.addEventListener("DOMContentLoaded",()=>{
 	
 	document.getElementById("game-start-btn").addEventListener("click",()=>{
 		localStorage.setItem('difficulty', difficultyLevel);
-		window.location.href="./index.html";
 	});
 	
 	document.getElementById("cbtn1").addEventListener("click",()=>{
@@ -29,6 +28,11 @@ document.addEventListener("DOMContentLoaded",()=>{
 		hardButton.classList.add("purple-background");
 		setDifficultyLevel("Hard");
 	});
+	document.getElementById("popup-btn").addEventListener("click",()=>{
+		let userName=document.getElementById("name-input").value;
+		localStorage.setItem("username",userName);
+		window.location.href="./index.html";
+	});
 	
 });
 let removeColorFromButton=()=>{
@@ -46,3 +50,5 @@ let setDifficultyLevel=(difficulty)=>{
 let addColorInButton=(buttonElement)=>{
 		buttonElement.classList.add("purple-background");
 };
+
+

@@ -16,7 +16,7 @@
 	}
 	
 	if($requestObject->operation=="update-top-scores"){
-		echo getRecentUsers();
+		echo updateTopScores();
 	}
 	
 	
