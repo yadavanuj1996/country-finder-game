@@ -1,0 +1,7 @@
+{
+	type:'scores json file',
+	data:{
+		sno:0,
+		points:{}
+	}
+}

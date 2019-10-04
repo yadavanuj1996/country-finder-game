@@ -45,7 +45,7 @@
 		//Modify the Name property value on basis of gid key
 		foreach($scoreArray as  $key => $value){
 			$valueObject=json_decode($value);
-			if($valueObject->gid===$inputGid){
+			if($valueObject->gid==$inputGid){
 				$valueObject->name=$inputName;
 				$scoreArray[$key]=json_encode($valueObject);
 			}
