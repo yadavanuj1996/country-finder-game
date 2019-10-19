@@ -116,7 +116,7 @@ let loadTooltip=()=>{
            .attr("id","tooltip"); 
 };
 let loadNewCountry=(countryData,svg,gElement,pElement,points,questionNo,alreadyDisplayedCountry)=>{
-  if(questionNo > getTotalQuestions()){
+  if(questionNo > getTotalQuestions()){  
 	loadScore(points);
     return ;
   }
@@ -206,7 +206,33 @@ let loadNewCountry=(countryData,svg,gElement,pElement,points,questionNo,alreadyD
 
 let loadScore=(points)=>{
   localStorage.setItem('points', points);
+  let difficulty=localStorage.getItem('difficulty');
+  let userName=localStorage.getItem('username');
+  
   window.onunload='';
+ 
+  
+  fetch('datasubmit.php', {
+	method: 'post',
+	headers: {
+    'Accept': 'application/json, text/plain, */*',
+    'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({"operation": "insert","score": points, "difficultyLevel": difficulty,"name": userName, "date": new Date().toLocaleString("en-US", {timeZone: "Asia/Kolkata"}),"gid": Math.round((Date.now()+Math.random()))})
+  })
+  .then(response => response.text())
+  
+	fetch('test.php', {
+		method: 'post',
+		headers: {
+		'Accept': 'application/json, text/plain, */*',
+		'Content-Type': 'application/json'
+		},
+		body: JSON.stringify({"operation": "update-top-scores"})
+		})
+		.then(response => response.text())
+		    
+	
   window.location.href="./score.html";
 };
 
