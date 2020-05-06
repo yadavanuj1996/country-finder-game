@@ -1,0 +1,617 @@
+:root{
+  --svg-width:80%;
+  --zoom-rect-x-pos:50px;
+  --zoom-text-x-pos:57px;
+  --details-div-width:80%;
+  --details-display: inline-block;
+  --heading-font-size: 24px;
+}
+@media only screen and (min-width:320px) and (max-width:720px){
+  :root{
+    --svg-width:100%;
+    --zoom-rect-x-pos:20px;
+    --zoom-text-x-pos:27px;
+    --details-div-width:100%;
+    --details-display: none;
+    inline-block;
+    --heading-font-size: 18px;
+  }
+}
+
+body{
+  margin:5px;
+  height:98vh !important;
+}
+.addDarkGradient{
+  background: linear-gradient(35deg, #fdad2c,#fdad2c);
+}
+.addLightGradient{
+  background: linear-gradient(35deg,#f57080,#f57080);
+}
+h1,h3{
+  text-align:center;
+}
+#country-name{
+  margin: 0px;
+  font-size: var(--heading-font-size,20px);
+}
+#tooltip{
+  position: absolute;
+  background-color: #0cf3cd;
+  color: #ffffff;
+  font-size: 15px;
+  max-width: 200px;
+  border-radius: 2%;
+  padding: 5px;
+  border: 1px solid #0cf3cd;
+	border-radius: 2px;
+}
+
+body{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+#points-holder{
+  margin: 0px;
+}
+.pathWithBorder {
+  paint-order: stroke fill;
+  stroke-width: 1.8;
+  stroke: black;
+}
+.centroid{
+  border-color:green !important;
+  border: 2px solid green !important;
+  background-color: black !important;
+}
+
+.wrong-choice-effects{
+  fill: #e4221b !important;
+  paint-order: normal !important;
+  stroke-width: 1.8 !important;
+  stroke: black !important;
+}
+.choice-hover-effects{
+  fill: #e0e41b !important;
+   paint-order: normal !important;
+  stroke-width: 1.5 !important;
+  stroke: black !important;
+}
+.correct-choice-effects{
+  fill: #10ef11 !important;
+  paint-order: normal !important;
+  stroke-width: 1.5 !important;
+  stroke: black !important;
+}
+.blinking-effect{
+  paint-order: normal !important;
+  stroke-width: 2.5 !important;
+  stroke: black !important;
+}
+#zoom-in-text{
+  transform: translate(var(--zoom-text-x-pos,42px), 268px);
+  font-size: 20px;
+  font-weight: bold;
+  cursor: zoom-in;
+}
+#zoom-out-text{
+   transform: translate(var(--zoom-text-x-pos,42px), 293px);
+  font-size: 30px;
+  font-weight: bold;
+  cursor: zoom-out;
+}
+.game-area-svg{
+  height:86vh;
+  width: var(--svg-width,100%);
+}
+.zoom-out-position{
+  x:var(--zoom-rect-x-pos,35px);
+  y:275;
+}
+.zoom-in-position{
+  x:var(--zoom-rect-x-pos,35px);
+  y:250;
+}
+#details-div{
+  width:var(--svg-width,80%);
+  height:8vh;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+}
+.sm-hidden{
+  display:var(--details-display,none);
+}
+svg{
+   background-color: #A4D1DC !important;
+  border: 2px solid black;
+  border-top-left-radius: 18px 18px;
+  border-top-right-radius: 18px 18px;
+}
+#svg-holder{
+  width: 100% !important;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center
+}
+#completion-indicator-holder{
+  border: 2px solid black !important;
+  border-bottom-left-radius: 20px 20px;
+  border-bottom-right-radius: 20px 20px; 
+  width: var(--svg-width,80%);
+  height:4vh;
+}
+#completion-indicator{
+    width: 10%;
+    height: 100%;
+    background: repeating-linear-gradient(
+      45deg,
+      yellow 0px,
+      yellow 40px,
+      black 40px,
+      black 80px
+    );
+  border-bottom-left-radius: 30px 30px;
+  border-bottom-right-radius: 30px 30px; 
+}
+.stop-pointer-events{
+  pointer-events: none;
+}
+
+/* CSS for hearts */
+
+  
+
+  
+@keyframes color {
+    0% {
+      background-color: pink;
+    }
+    25% {
+      background-color: red;
+    }
+    50% {
+      background-color: #ef102c;
+    }
+    75% {
+      background-color: #c43b42;
+    }
+    100% {
+      background-color: #fc0383;
+    }
+  } 
+@media only screen and (min-width: 721px){
+  .heart {
+    position: absolute;
+    margin: auto;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-color: pink;
+    height: 20px;
+    width: 20px;
+    transform: rotate(-45deg);
+  }
+  .heart:after {
+    background-color: pink;
+    content: "";
+    border-radius: 50%;
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    top: 0px;
+    left: 10px;
+    animation-name: color;
+    animation-duration: 1.8s;
+    animation-iteration-count: infinite;
+  }
+  .heart:before {
+    background-color: pink;
+    content: "";
+    border-radius: 50%;
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    top: -10px;
+    left: 0px;
+    animation-name: color;
+    animation-duration: 1.8s;
+    animation-iteration-count: infinite;
+  }
+
+  @keyframes movement-anim-1{
+    0% {
+      background-color: pink;
+      top:80%;
+      right:80%;
+      transform: scale(0.6) rotate(-45deg);
+    }
+    25% {
+      background-color: red;
+      top:40%;
+      right:80%;
+      transform: scale(0.8) rotate(-45deg);
+    }
+    50% {
+      background-color: #ef102c;
+      top:0%;
+      right:80%;
+      transform: scale(1) rotate(-45deg);
+    }
+    75% {
+      background-color: #c43b42;
+      bottom:40%;
+      right:80%;
+      transform: scale(0.8) rotate(-45deg);
+    }
+    100% {
+      background-color: #fc0383;
+      bottom:80%;
+      right:80%;
+      transform: scale(0.6) rotate(-45deg);
+    }
+  } 
+  @keyframes movement-anim-2{
+    0% {
+      background-color: pink;
+      top:80%;
+      right:80%;
+      transform: scale(0.6) rotate(-45deg);
+    }
+    25% {
+      background-color: red;
+      top:40%;
+      right:85%;
+      transform: scale(0.8) rotate(-45deg);
+    }
+    50% {
+      background-color: #ef102c;
+      top:0%;
+      right:90%;
+      transform: scale(1) rotate(-45deg);
+    }
+    75% {
+      background-color: #c43b42;
+      bottom:40%;
+      right:95%;
+      transform: scale(0.8) rotate(-45deg);
+    }
+    100% {
+      background-color: #fc0383;
+      bottom:80%;
+      right:90%;
+      transform: scale(0.6) rotate(-45deg);
+    }
+  } 
+  @keyframes movement-anim-3{
+    0% {
+      background-color: pink;
+      top:80%;
+      right:80%;
+      transform: scale(0.6) rotate(-45deg);
+    }
+    25% {
+      background-color: red;
+      top:40%;
+      right:75%;
+      transform: scale(0.8) rotate(-45deg);
+    }
+    50% {
+      background-color: #ef102c;
+      top:0%;
+      right:70%;
+      transform: scale(1) rotate(-45deg);
+    }
+    75% {
+      background-color: #c43b42;
+      bottom:40%;
+      right:65%;
+      transform: scale(0.8) rotate(-45deg);
+    }
+    100% {
+      background-color: #fc0383;
+      bottom:80%;
+      right:70%;
+      transform: scale(0.6) rotate(-45deg);
+    }
+  } 
+  @keyframes movement-anim-4{
+    0% {
+      background-color: pink;
+      top:80%;
+      left:80%;
+      transform: scale(0.6) rotate(-45deg);
+    }
+    25% {
+      background-color: red;
+      top:40%;
+      left:80%;
+      transform: scale(0.8) rotate(-45deg);
+    }
+    50% {
+      background-color: #ef102c;
+      top:0%;
+      left:80%;
+      transform: scale(1) rotate(-45deg);
+    }
+    75% {
+      background-color: #c43b42;
+      bottom:40%;
+      left:80%;
+      transform: scale(0.8) rotate(-45deg);
+    }
+    100% {
+      background-color: #fc0383;
+      bottom:80%;
+      left:80%;
+      transform: scale(0.6) rotate(-45deg);
+    }
+  } 
+  @keyframes movement-anim-5{
+    0% {
+      background-color: pink;
+      top:80%;
+      left:80%;
+      transform: scale(0.6) rotate(-45deg);
+    }
+    25% {
+      background-color: red;
+      top:40%;
+      left:85%;
+      transform: scale(0.8) rotate(-45deg);
+    }
+    50% {
+      background-color: #ef102c;
+      top:0%;
+      left:90%;
+      transform: scale(1) rotate(-45deg);
+    }
+    75% {
+      background-color: #c43b42;
+      bottom:40%;
+      left:95%;
+      transform: scale(0.8) rotate(-45deg);
+    }
+    100% {
+      background-color: #fc0383;
+      bottom:80%;
+      left:90%;
+      transform: scale(0.6) rotate(-45deg);
+    }
+  } 
+  @keyframes movement-anim-6{
+    0% {
+      background-color: pink;
+      top:80%;
+      left:80%;
+      transform: scale(0.6) rotate(-45deg);
+    }
+    25% {
+      background-color: red;
+      top:40%;
+      left:75%;
+      transform: scale(0.8) rotate(-45deg);
+    }
+    50% {
+      background-color: #ef102c;
+      top:0%;
+      left:70%;
+      transform: scale(1) rotate(-45deg);
+    }
+    75% {
+      background-color: #c43b42;
+      bottom:40%;
+      left:65%;
+      transform: scale(0.8) rotate(-45deg);
+    }
+    100% {
+      background-color: #fc0383;
+      bottom:80%;
+      left:70%;
+      transform: scale(0.6) rotate(-45deg);
+    }
+  } 
+
+  .movement-1{
+    animation-name: movement-anim-1;
+    animation-duration: 1.8s;
+    animation-iteration-count: infinite;
+  }
+  .movement-2{
+    animation-name: movement-anim-2;
+    animation-duration: 1.8s;
+    animation-iteration-count: infinite;
+  }
+  .movement-3{
+    animation-name: movement-anim-3;
+    animation-duration: 1.8s;
+    animation-iteration-count: infinite;
+  }
+  .movement-4{
+    animation-name: movement-anim-4;
+    animation-duration: 1.8s;
+    animation-iteration-count: infinite;  
+  }
+  .movement-5{
+    animation-name: movement-anim-5;
+    animation-duration: 1.8s;
+    animation-iteration-count: infinite;
+  }
+  .movement-6{
+  animation-name: movement-anim-6;
+  animation-duration: 1.8s;
+  animation-iteration-count: infinite;
+  }
+}
+@media only screen and (min-width: 320px) and (max-width:720px){
+  #heart-holder{
+  position: absolute !important;
+  margin: auto;
+  height: 30px;
+  width: 30px;
+  border: 2px solid black;
+  border-radius: 50%;
+  background-color: white;
+  top:90%;
+  z-index: 1;
+  overflow: hidden !important;
+}
+  .mobile-heart {
+    position: absolute;
+    margin: auto;
+    top: 0;
+    right: 0;
+    bottom: 20px;
+    left: 0;
+    background-color: #c43b42;
+    height: 10px;
+    width: 10px;
+    top:88.5%;
+    transform: rotate(-45deg);
+    z-index:2;
+    animation-name: color;
+    animation-duration: 1.8s;
+    animation-iteration-count: infinite;
+  }
+  .mobile-heart:after {
+    background-color: #c43b42;
+    content: "";
+    border-radius: 50%;
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    top: 0px;
+    left: 6px;
+    animation-name: color;
+    animation-duration: 1.8s;
+    animation-iteration-count: infinite;
+  }
+  .mobile-heart:before {
+    background-color: #c43b42;
+    content: "";
+    border-radius: 50%;
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    top: -6px;
+    left: 0px;
+    animation-name: color;
+    animation-duration: 1.8s;
+    animation-iteration-count: infinite;
+  }
+
+}
+
+.show-display{
+  display: block !important; 
+}
+.hide-display{
+  display: none !important; 
+}
+
+
+/* x-mark or wrong choice symbol CSS */
+@media only screen and (min-width: 320px) and (max-width: 2080px){
+  .x-mark {
+    position: absolute;
+    margin: auto;
+    top: 0px;
+    right: 0;
+    bottom: 0;
+    left: 5px;
+    height: 10px;
+    width: 10px;
+    transform: rotate(-45deg);   
+  }
+  .x-mark:after {
+    background-color: pink;
+    content: "";
+    border-radius: 2%;
+    position: absolute;
+    width: 20px;
+    height: 5px;
+    top: 0px;
+    left: -7px;
+    animation-name: color;
+    animation-duration: 1s;
+    animation-iteration-count: infinite;
+  }
+  .x-mark:before {
+    background-color: pink;
+    content: "";
+    border-radius: 2%;
+    position: absolute;
+    height: 20px;
+    width: 5px;
+    top: -7px;
+    left: 0px;
+    animation-name: color;
+    animation-duration: 1s;
+    animation-iteration-count: infinite;
+  }
+  .x-mark-zoom-in-out{
+    animation-name: zoom-in-out;
+    animation-duration: 1.8s;
+    animation-iteration-count: infinite;
+  }
+  @keyframes zoom-in-out {
+    0% {
+      transform: scale(0.6) rotate(-45deg);
+    }
+    25% {
+      transform: scale(0.8) rotate(-45deg);
+    }
+    50% {
+      transform: scale(1) rotate(-45deg);
+    }
+    75% {
+      transform: scale(0.8) rotate(-45deg);
+    }
+    100% {
+      transform: scale(0.6) rotate(-45deg);
+    }
+  }
+  #x-mark-holder{
+    position: absolute !important;
+    margin: auto;
+    height: 30px;
+    width: 30px;
+    border: 2px solid black;
+    border-radius: 50%;
+    background-color: white;
+    top:90%;
+    z-index: 1;
+    overflow: hidden !important;
+  }
+}
+/*
+// @TODO rotating the view by 90 degree as to when the view is landscape to make it appear as portrait but the browser support is not proper.
+
+@media (orientation: landscape) and (min-width: 320px) and (max-width:720px){
+  body{
+    transform: rotate(-90deg);
+    height:98vw !important;
+  }
+  #svg-holder{
+    height:86vw !important;
+    width: 100vh !important;
+  }
+  .game-area-svg{
+    height:86vw !important;
+    width: 100vh !important;
+  }
+  #details-div{
+  width:100vh !important;
+  height:8vw !important;
+  }
+  #completion-indicator-holder{
+  width: 100vh !important;
+  height:4vw !important;
+  }
+}
+*/
